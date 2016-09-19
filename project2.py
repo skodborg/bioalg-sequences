@@ -19,52 +19,84 @@ mSub = [[10,  2,  5,  2],  # A
 optimal = min
 
 def optimal_cost(seq1, seq2):
-    mS = [[None for _ in range(len(seq2))] for _ in range(len(seq1))]
-    mD = [[None for _ in range(len(seq2))] for _ in range(len(seq1))]
-    mI = [[None for _ in range(len(seq2))] for _ in range(len(seq1))]
+    mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
+    mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
+    mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
 
     # recursions
     def S(i, j):
-        # memoization, look up before calculating
-        # TODO
-
         values = []
         # base case
         if i == 0 and j == 0:
             values.append(0)
         
         if i > 0 and j > 0:
-            values.append(S(i - 1, j - 1) + mSub[alph[seq1[i - 1]]][alph[seq2[j - 1]]])
+            mS_lookup = mS[i - 1][j - 1]
+            char_comparison = mSub[alph[seq1[i - 1]]][alph[seq2[j - 1]]]
+            if mS_lookup:
+                values.append(mS_lookup + char_comparison)
+            else:
+                values.append(S(i - 1, j - 1) + char_comparison)
 
         if i > 0 and j >= 0:
-            values.append(D(i, j))
+            mD_lookup = mD[i][j]
+            if mD_lookup:
+                values.append(mD_lookup)
+            else:
+                values.append(D(i, j))
 
         if i >= 0 and j > 0:
-            values.append(I(i, j))
+            mI_lookup = mI[i][j]
+            if mI_lookup:
+                values.append(mI_lookup)
+            else:
+                values.append(I(i, j))
 
-        return max(values)
+        max_value = max(values)
+        mS[i][j] = max_value
+        return max_value
 
     def D(i, j):
         values = []
 
         if i > 0 and j >= 0:
-            values.append(S(i - 1, j) - (alpha + beta))
+            mS_lookup = mS[i - 1][j]
+            if mS_lookup:
+                values.append(mS_lookup - (alpha + beta))
+            else:
+                values.append(S(i - 1, j) - (alpha + beta))
 
         if i > 1 and j >= 0:
-            values.append(D(i - 1, j) - alpha)
+            mD_lookup = mD[i - 1][j]
+            if mD_lookup:
+                values.append(mD_lookup - alpha)
+            else:
+                values.append(D(i - 1, j) - alpha)
 
-        return max(values)
+        max_value = max(values)
+        mD[i][j] = max_value
+        return max_value
 
     def I(i, j):
         values = []
 
         if i >= 0 and j > 0:
-            values.append(S(i, j - 1) - (alpha + beta))
+            mS_lookup = mS[i][j - 1]
+            if mS_lookup:
+                values.append(mS_lookup - (alpha + beta))
+            else:
+                values.append(S(i, j - 1) - (alpha + beta))
 
         if i >=0 and j > 1:
-            values.append(I(i, j - 1) - alpha)
+            mI_lookup = mI[i][j - 1]
+            if mI_lookup:
+                values.append(mI_lookup - alpha)
+            else:
+                values.append(I(i, j - 1) - alpha)
 
-        return max(values)
+        max_value = max(values)
+        mI[i][j] = max_value
+        return max_value
 
     result = S(len(seq1), len(seq2)) 
     return result
@@ -123,27 +155,7 @@ def read_input_score(aFile):
 
         return (cost, alphabet, scoreMatrix)
 
-def main():
-    global mSub, alpha, beta
-    
-    parser = argparse.ArgumentParser()
-
-    input_seq1 = "Path to FASTA file containing the first sequence"
-    parser.add_argument("seq1", help=input_seq1)
-    input_seq2 = "Path to FASTA file containing the second sequence"
-    parser.add_argument("seq2", help=input_seq2)
-    
-    input_scoreMatrix = "Path to a file containing the score matrix"
-    parser.add_argument("scoreMatrix", help=input_scoreMatrix)
-    
-
-    args = parser.parse_args()
-
-
-    seq1 = read_input_fasta(args.seq1)
-    seq2 = read_input_fasta(args.seq2)
-    
-
+def runTests():
     for i in range(1, 2):
     
         scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score("project_2_examples/scorematrix_1.txt")
@@ -154,6 +166,40 @@ def main():
         mSub = scoreMatrix
         print(i)
         print(optimal_cost(seq1, seq2))
+
+    
+def main():
+    global mSub, alpha, beta
+    
+    parser = argparse.ArgumentParser()
+
+    input_seq1 = "Path to FASTA file containing the first sequence"
+    parser.add_argument("--seq1", help=input_seq1)
+    input_seq2 = "Path to FASTA file containing the second sequence"
+    parser.add_argument("--seq2", help=input_seq2)
+    input_scoreMatrix = "Path to a file containing the score matrix"
+    parser.add_argument("--scoreMatrix", help=input_scoreMatrix)
+
+    args = parser.parse_args()
+
+    if args.seq1 and args.seq2:
+        seq1 = read_input_fasta(args.seq1)
+        seq2 = read_input_fasta(args.seq2)
+    else:
+        seq1 = read_input_fasta('fasta1.txt')
+        seq2 = read_input_fasta('fasta2.txt')
+
+    if args.scoreMatrix:
+        scoreMatrixTotal = (cost, alphabet, scoreMatrix) = read_input_score(args.scoreMatrix)
+    else:
+        scoreMatrixTotal = (cost, alphabet, scoreMatrix) = read_input_score('scorematrix.txt')
+
+    alpha = alphaCost
+    beta = betaCost
+    mSub = scoreMatrix  
+    print(optimal_cost(seq1, seq2))
+
+    
     
     
 
