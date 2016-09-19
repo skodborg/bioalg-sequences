@@ -156,7 +156,7 @@ def read_input_score(aFile):
         return (cost, alphabet, scoreMatrix)
 
 def runTests():
-    for i in range(1, 2):
+    for i in range(1, 5):
     
         scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score("project_2_examples/scorematrix_1.txt")
         seq1 = read_input_fasta("project_2_examples/seq1_ex" + str(i) + ".txt")
@@ -164,10 +164,9 @@ def runTests():
         alpha = alphaCost
         beta = betaCost
         mSub = scoreMatrix
-        print(i)
         print(optimal_cost(seq1, seq2))
 
-    
+
 def main():
     global mSub, alpha, beta
     
@@ -190,15 +189,16 @@ def main():
         seq2 = read_input_fasta('fasta2.txt')
 
     if args.scoreMatrix:
-        scoreMatrixTotal = (cost, alphabet, scoreMatrix) = read_input_score(args.scoreMatrix)
+        scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score(args.scoreMatrix)
     else:
-        scoreMatrixTotal = (cost, alphabet, scoreMatrix) = read_input_score('scorematrix.txt')
+        scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score('scorematrix.txt')
 
     alpha = alphaCost
     beta = betaCost
     mSub = scoreMatrix  
-    print(optimal_cost(seq1, seq2))
 
+    
+    runTests()
     
     
     
