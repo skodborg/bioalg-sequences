@@ -1,6 +1,25 @@
 import numpy as np
 import argparse
 
+
+
+alph = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
+
+alpha = 5
+beta = 0
+def gapcost(k):
+    return beta + k * alpha
+
+#         A,  C,  G,  T
+mSub = [[10,  2,  5,  2],  # A
+        [ 2, 10,  2,  5],  # C
+        [ 5,  2, 10,  2],  # G
+        [ 2,  5,  2, 10]]  # T
+
+
+optimal = min
+
+
 def optimal_cost(seq1, seq2, optimizer_func=max):
     global alpha, beta
     optimal = optimizer_func
@@ -87,6 +106,7 @@ def optimal_cost(seq1, seq2, optimizer_func=max):
         return opt_value
 
     result = S(len(seq1), len(seq2)) 
+    print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
     return result
 
 def cost(str_tuple, alpha, beta, mSub):
@@ -142,6 +162,48 @@ def read_input_score(aFile):
 
         return (cost, alphabet, scoreMatrix)
 
+def backtrack(seq1, seq2, table):
+    def subst_cost(p1, p2):
+        cost = mSub[alph[p1]][alph[p2]]
+        return cost
+
+    i = len(seq1)
+    j = len(seq2)
+    sequence1 = ""
+    sequence2 = ""
+
+    while(i > 0 or j > 0):
+        if((i > 0 and j > 0) and (table[i][j] == table[i-1][j-1] + subst_cost(seq1[i-1], seq2[j-1]))):
+            i = i - 1
+            j = j - 1
+            sequence1 = seq1[i] + sequence1
+            sequence2 = seq2[j] + sequence2
+
+        else:
+            k = 1
+            while (1):
+                if(i >= k and table[i][j] == table[i-k][j] - gapcost(k)):
+                    
+                    slashes = "-" * k
+                    sequence2 = slashes + sequence2
+                    sequence1 = seq1[i-k:i] + sequence1
+                    i = i - k
+                    break
+
+                elif(j >= k and table[i][j] == table[i][j-k] - gapcost(k)):
+
+                    
+                    slashes = "-" * k
+                    sequence1 = slashes + sequence1
+
+                    sequence2 = seq2[j-k:j] + sequence2
+                    j = j - k
+                    break
+                else:
+                    k = k + 1
+    return (sequence1, sequence2)
+    
+
 def runTests():
     global mSub, alpha, beta, alph
     for i in range(1, 5):
@@ -155,7 +217,7 @@ def runTests():
         alph = alphabet
 
         alignment_cost = optimal_cost(seq1, seq2, min)
-        print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
+        #print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
         
 
 def main():
