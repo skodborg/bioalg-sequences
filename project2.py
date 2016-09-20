@@ -19,7 +19,6 @@ mSub = [[10,  2,  5,  2],  # A
 optimal = min
 
 def optimal_cost(seq1, seq2):
-    print(alph)
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
@@ -55,6 +54,7 @@ def optimal_cost(seq1, seq2):
 
         max_value = max(values)
         mS[i][j] = max_value
+
         return max_value
 
     def D(i, j):
@@ -100,6 +100,7 @@ def optimal_cost(seq1, seq2):
         return max_value
 
     result = S(len(seq1), len(seq2)) 
+    backtrack(seq1, seq2, mS)
     return result
 
 
@@ -155,6 +156,45 @@ def read_input_score(aFile):
         scoreMatrix = [[int(array[i][x]) for x in range(1, len(array[i]))] for i in range(1, len(array))]
 
         return (cost, alphabet, scoreMatrix)
+
+def backtrack(seq1, seq2, table):
+    def subst_cost(p1, p2):
+        cost = mSub[alph[p1]][alph[p2]]
+        return cost
+
+    i = len(seq1)
+    j = len(seq2)
+
+    sequence1 = ""
+    sequence2 = ""
+
+    while(i > 0 or j > 0):
+        if((i > 0 and j > 0) and (table[i][j] == table[i-1][j-1] + subst_cost(seq1[i-1], seq2[j-1]))):
+            i = i - 1
+            j = j - 1
+            sequence1 = seq1[i-1] + sequence1
+            sequence2 = seq2[i-1] + sequence2
+
+        else:
+            k = 1
+            while (1):
+                if(i >= k and table[i][j] == table[i-k][j] - gapcost(k)):
+                    i = i - k
+                    slashes = "k" * (k+1)
+                    sequence2 = slashes + sequence2
+                    break
+
+                elif(j >= k and table[i][j] == table[i][j-k] - gapcost(k)):
+                    j = j-k
+                    slashes = "k" * (k+1)
+
+                    sequence1 = slashes + sequence1
+                    break
+                else:
+                    k = k+1
+
+    print("seq1: " + sequence1)
+    print("seq2: " + sequence2)
 
 def runTests():
     global mSub, alpha, beta, alph
