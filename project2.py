@@ -2,12 +2,13 @@ import numpy as np
 import argparse
 
 
+
 alph = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
 
 alpha = 5
 beta = 0
-def gapcost(k, alpha=0):
-    return alpha + k * beta
+def gapcost(k):
+    return beta + k * alpha
 
 #         A,  C,  G,  T
 mSub = [[10,  2,  5,  2],  # A
@@ -18,7 +19,9 @@ mSub = [[10,  2,  5,  2],  # A
 
 optimal = min
 
-def optimal_cost(seq1, seq2):
+
+def optimal_cost(seq1, seq2, optimizer_func=max):
+    optimal = optimizer_func
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
@@ -26,7 +29,7 @@ def optimal_cost(seq1, seq2):
     # recursions
     def S(i, j):
         values = []
-        # base case
+
         if i == 0 and j == 0:
             values.append(0)
         
@@ -52,10 +55,9 @@ def optimal_cost(seq1, seq2):
             else:
                 values.append(I(i, j))
 
-        max_value = max(values)
-        mS[i][j] = max_value
-
-        return max_value
+        opt_value = optimal(values)
+        mS[i][j] = opt_value
+        return opt_value
 
     def D(i, j):
         values = []
@@ -74,9 +76,9 @@ def optimal_cost(seq1, seq2):
             else:
                 values.append(D(i - 1, j) - alpha)
 
-        max_value = max(values)
-        mD[i][j] = max_value
-        return max_value
+        opt_value = optimal(values)
+        mD[i][j] = opt_value
+        return opt_value
 
     def I(i, j):
         values = []
@@ -95,22 +97,21 @@ def optimal_cost(seq1, seq2):
             else:
                 values.append(I(i, j - 1) - alpha)
 
-        max_value = max(values)
-        mI[i][j] = max_value
-        return max_value
+        opt_value = optimal(values)
+        mI[i][j] = opt_value
+        return opt_value
 
     result = S(len(seq1), len(seq2)) 
-    backtrack(seq1, seq2, mS)
+    print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
     return result
 
-
-def cost(str_tuple):
+def cost(str_tuple, alpha, beta, mSub):
     def subst_cost(pair):
         cost = mSub[alph[pair[0]]][alph[pair[1]]]
         return cost
 
     def gap_cost(k):
-        return -5 * k
+        return alpha * k + beta
 
     str1 = str_tuple[0]
     str2 = str_tuple[1]
@@ -164,7 +165,6 @@ def backtrack(seq1, seq2, table):
 
     i = len(seq1)
     j = len(seq2)
-
     sequence1 = ""
     sequence2 = ""
 
@@ -172,33 +172,37 @@ def backtrack(seq1, seq2, table):
         if((i > 0 and j > 0) and (table[i][j] == table[i-1][j-1] + subst_cost(seq1[i-1], seq2[j-1]))):
             i = i - 1
             j = j - 1
-            sequence1 = seq1[i-1] + sequence1
-            sequence2 = seq2[i-1] + sequence2
+            sequence1 = seq1[i] + sequence1
+            sequence2 = seq2[j] + sequence2
 
         else:
             k = 1
             while (1):
                 if(i >= k and table[i][j] == table[i-k][j] - gapcost(k)):
-                    i = i - k
-                    slashes = "k" * (k+1)
+                    
+                    slashes = "-" * k
                     sequence2 = slashes + sequence2
+                    sequence1 = seq1[i-k:i] + sequence1
+                    i = i - k
                     break
 
                 elif(j >= k and table[i][j] == table[i][j-k] - gapcost(k)):
-                    j = j-k
-                    slashes = "k" * (k+1)
 
+                    
+                    slashes = "-" * k
                     sequence1 = slashes + sequence1
+
+                    sequence2 = seq2[j-k:j] + sequence2
+                    j = j - k
                     break
                 else:
-                    k = k+1
-
-    print("seq1: " + sequence1)
-    print("seq2: " + sequence2)
+                    k = k + 1
+    return (sequence1, sequence2)
+    
 
 def runTests():
     global mSub, alpha, beta, alph
-    for i in range(1, 2):
+    for i in range(1, 5):
     
         scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score("project_2_examples/scorematrix_1.txt")
         seq1 = read_input_fasta("project_2_examples/seq1_ex" + str(i) + ".txt")
@@ -208,13 +212,9 @@ def runTests():
         mSub = scoreMatrix  
         alph = alphabet
 
-        print(seq1)
-        print(seq2)
-        print(alpha)
-        print(beta)
-        print(mSub)
-        print(optimal_cost(seq1, seq2))
-
+        alignment_cost = optimal_cost(seq1, seq2, min)
+        #print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
+        
 
 def main():
     global mSub, alpha, beta, alph
@@ -248,9 +248,6 @@ def main():
     alph = alphabet
     
     runTests()
-
-    
-    
     
 
 
