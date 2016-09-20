@@ -19,6 +19,7 @@ mSub = [[10,  2,  5,  2],  # A
 optimal = min
 
 def optimal_cost(seq1, seq2):
+    print(alph)
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
@@ -156,19 +157,27 @@ def read_input_score(aFile):
         return (cost, alphabet, scoreMatrix)
 
 def runTests():
-    for i in range(1, 5):
+    global mSub, alpha, beta, alph
+    for i in range(1, 2):
     
         scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score("project_2_examples/scorematrix_1.txt")
         seq1 = read_input_fasta("project_2_examples/seq1_ex" + str(i) + ".txt")
         seq2 = read_input_fasta("project_2_examples/seq2_ex" + str(i) + ".txt")
         alpha = alphaCost
         beta = betaCost
-        mSub = scoreMatrix
+        mSub = scoreMatrix  
+        alph = alphabet
+
+        print(seq1)
+        print(seq2)
+        print(alpha)
+        print(beta)
+        print(mSub)
         print(optimal_cost(seq1, seq2))
 
 
 def main():
-    global mSub, alpha, beta
+    global mSub, alpha, beta, alph
     
     parser = argparse.ArgumentParser()
 
@@ -196,9 +205,10 @@ def main():
     alpha = alphaCost
     beta = betaCost
     mSub = scoreMatrix  
-
+    alph = alphabet
     
     runTests()
+
     
     
     
