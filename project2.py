@@ -2,7 +2,11 @@ import numpy as np
 import argparse
 
 def optimal_cost(seq1, seq2, optimizer_func=max):
+    global alpha, beta
     optimal = optimizer_func
+    if optimal == min:
+        alpha = -alpha
+        beta = -beta
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
