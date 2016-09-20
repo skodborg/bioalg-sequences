@@ -10,12 +10,19 @@ import numpy as np
 seq1 = "CGTGTCAAGTCT"
 seq2 = "ACGTCGTAGCTAGG"
 
-gapCost = -5
+#gapCost = -5
 
-mSub = [[10, 2, 5, 2],
+'''mSub = [[10, 2, 5, 2],
 		 [2, 10, 2, 5],
 		 [5, 2, 10, 2],
-		 [2, 5, 2, 10]]
+		 [2, 5, 2, 10]]'''
+
+gapCost = 0
+mSub = [[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0],
+		[0, 0, 0, 0]]
+
 
 d = {'A' : 0, 'C' : 1, 'G' : 2, 'T' : 3}
 
@@ -46,14 +53,15 @@ def optimalCostAlignment(sequence1, sequence2):
 			table[y][x] = cost
 
 	table = np.array(table)
-	print(table)
 
+
+	backtrackingSequences = []
 
 	def backTracking(sequences, x, y):
 		result = table[y][x]
 
 		if(x == 0 and y == 0):
-			print(sequences)
+			backtrackingSequences.append(sequences)
 			return
 
 		if(table[y-1][x] + gapCost == result):
@@ -77,6 +85,8 @@ def optimalCostAlignment(sequence1, sequence2):
 
 
 	backTracking(("",""), len(table[0])-1, len(table)-1)
+	return backtrackingSequences
+
 
 def read_input(aFile):
     f = open(aFile, 'r', encoding='latin1')
@@ -85,11 +95,9 @@ def read_input(aFile):
 
 
 
-def main():
-	fastaSequence1 = read_input("seq1.fasta")[6:].replace(" ","").replace("\n", "")
-	fastaSequence2 = read_input("seq2.fasta")[6:].replace(" ","").replace("\n", "")
-
-	optimalCostAlignment(fastaSequence1, fastaSequence2);
+#def main():
+	#fastaSequence1 = read_input("project_2_examples/seq1_ex1.txt")[6:].replace(" ","").replace("\n", "").upper()
+	#fastaSequence2 = read_input("project_2_examples/seq2_ex1.txt")[6:].replace(" ","").replace("\n", "").upper()
 
 
 if __name__ == '__main__':

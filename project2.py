@@ -1,5 +1,6 @@
 import numpy as np
 import argparse
+import project1_2 as p1
 
 
 
@@ -219,6 +220,20 @@ def runTests():
         alignment_cost = optimal_cost(seq1, seq2, min)
         #print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
         
+def testCostAgaisntBruteForce(seq1, seq2):
+    allS = p1.optimalCostAlignment(seq1, seq2)
+
+    minCost = float("inf")
+
+    for x in allS:
+        minCost = min(minCost, cost(x, alpha, beta, mSub))
+
+    alignment_cost = optimal_cost(seq1, seq2, min)
+    return alignment_cost == minCost
+
+def testCases():
+    assert testCostAgaisntBruteForce("ACT", "AAA")
+    assert testCostAgaisntBruteForce("ACC", "ATT")
 
 def main():
     global mSub, alpha, beta, alph
@@ -252,8 +267,10 @@ def main():
     alph = alphabet
     
     runTests()
-    
+
+  
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    testCases()
