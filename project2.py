@@ -17,16 +17,12 @@ mSub = [[10,  2,  5,  2],  # A
         [ 5,  2, 10,  2],  # G
         [ 2,  5,  2, 10]]  # T
 
-
 optimal = min
 
 
 def optimal_cost(seq1, seq2, optimizer_func=max):
     global alpha, beta
     optimal = optimizer_func
-    if optimal == min:
-        alpha = -alpha
-        beta = -beta
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
@@ -258,6 +254,38 @@ def testCostAgaisntBruteForce(seq1, seq2):
     alignment_cost = optimal_cost(seq1, seq2, min)
     return alignment_cost == minCost
 
+def project2_eval_sequences():
+    for i in range(1, 5):
+        seq1 = read_input_fasta("project_2_examples/seq1_ex" + str(i) + ".txt")
+        seq2 = read_input_fasta("project_2_examples/seq2_ex" + str(i) + ".txt")
+        alignment_cost = optimal_cost(seq1, seq2, min)
+
+    seq1 = 'tatggagagaataaaagaactgagagatctaatgtcgcagtcccgcactcgcgagatact' +\
+           'cactaagaccactgtggaccatatggccataatcaaaaag'
+    seq1 = seq1.upper()
+    seq2 = 'atggatgtcaatccgactctacttttcctaaaaattccagcgcaaaatgccataagcacc' +\
+           'acattcccttatactggagatcctccatacagccatggaa'
+    seq2 = seq2.upper()
+    seq3 = 'tccaaaatggaagactttgtgcgacaatgcttcaatccaatgatcgtcgagcttgcggaa' +\
+           'aaggcaatgaaagaatatggggaagatccgaaaatcgaaa'
+    seq3 = seq3.upper()
+    seq4 = 'aaaagcaacaaaaatgaaggcaatactagtagttctgctatatacatttgcaaccgcaaa' +\
+           'tgcagacacattatgtataggttatcatgcgaacaattca'
+    seq4 = seq4.upper()
+    seq5 = 'atgagtgacatcgaagccatggcgtctcaaggcaccaaacgatcatatgaacaaatggag' +\
+           'actggtggggagcgccaggatgccacagaaatcagagcat'
+    seq5 = seq5.upper()
+
+    sequences = [seq1, seq2, seq3, seq4, seq5]
+    results = [[None for _ in range(5)] for _ in range(5)]
+    for i in range(5):
+        for j in range(5):
+            results[i][j] = optimal_cost(sequences[i], sequences[j], min)
+    print('\n\n')
+    print(np.array(results))
+
+    optimal_cost(seq1, seq2, min)
+
 def testCases():
     assert testCostAgaisntBruteForce("ACT", "AAA")
     assert testCostAgaisntBruteForce("ACC", "ATT")
@@ -304,9 +332,11 @@ def main():
     alph = alphabet
     
     # runTests()
-    print(bruteforce_min_cost('AA', 'AA'))
+    # print(bruteforce_min_cost('AA', 'AA'))
+
+    project2_eval_sequences()
     
 
 if __name__ == '__main__':
-    #main()
-    testCases()
+    main()
+    # testCases()
