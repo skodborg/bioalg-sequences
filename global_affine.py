@@ -36,7 +36,11 @@ def main():
     cost, alignment = p2.optimal_cost(seq1, seq2, min, bool_backtrack)
     print('cost: %i' % cost)
     if bool_backtrack:
-        print('alignment: %s' % (str(alignment)))
+        print('>seq1')
+        print(alignment[0])
+        print()
+        print('>seq2')
+        print(alignment[1])
 
 
 if __name__ == '__main__':
