@@ -6,8 +6,8 @@ import time
 
 alph = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
 
-alpha = 5
-beta = 5
+alpha = 0
+beta = 0
 
 
 #         A,  C,  G,  T
@@ -17,17 +17,17 @@ mSub = [[10,  2,  5,  2],  # A
         [ 2,  5,  2, 10]]  # T
 
 optimal = min
-toggle = True
 
-def optimal_cost(seq1, seq2, optimizer_func=max):
-    global alpha, beta
+def optimal_cost(seq1, seq2, optimizer_func=max, backtracking=False):
     optimal = optimizer_func
     loc_alpha = alpha
     loc_beta = beta
-    # if optimal == min:
-    #     loc_alpha = -alpha
-    #     loc_beta = -beta  
-
+    if optimal == min:
+        if alpha > 0:
+            loc_alpha = -alpha
+        if beta > 0:
+            loc_beta = -beta  
+    
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
@@ -106,9 +106,12 @@ def optimal_cost(seq1, seq2, optimizer_func=max):
         mI[i][j] = opt_value
         return opt_value
 
-    result = S(len(seq1), len(seq2)) 
+    result = S(len(seq1), len(seq2))
     #print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
-    return result
+    alignment = None
+    if backtracking:
+        alignment = backtrack(seq1, seq2, mS)
+    return result, alignment
 
 def cost(str_tuple, alpha, beta, mSub):
 
@@ -153,16 +156,16 @@ def read_input_score(aFile):
     with open(aFile) as f:
         lines = f.readlines()
         array = [i.split() for i in lines]
-        cost = (alphaCost, betaCost) = (int(array[0][0]), int(array[0][1]))
+        # cost = (alphaCost, betaCost) = (int(array[0][0]), int(array[0][1]))
 
         alphabet = {}
 
-        for i in range(1, len(array)):
-            alphabet[array[i][0]] = (i-1)
+        for i in range(0, len(array)):
+            alphabet[array[i][0]] = i
 
-        scoreMatrix = [[int(array[i][x]) for x in range(1, len(array[i]))] for i in range(1, len(array))]
+        scoreMatrix = [[int(array[i][x]) for x in range(1, len(array[i]))] for i in range(0, len(array))]
 
-        return (cost, alphabet, scoreMatrix)
+        return alphabet, scoreMatrix
 
 def backtrack(seq1, seq2, table):
     def subst_cost(p1, p2):
@@ -175,8 +178,10 @@ def backtrack(seq1, seq2, table):
     loc_alpha = alpha
     loc_beta = beta
     if optimal == min:
-        loc_alpha = -alpha
-        loc_beta = -beta 
+        if alpha > 0:
+            loc_alpha = -alpha
+        if beta > 0:
+            loc_beta = -beta  
 
     i = len(seq1)
     j = len(seq2)
@@ -276,12 +281,15 @@ def testCostAgaisntBruteForce(seq1, seq2):
     print('min: %i   alignment: %i' % (minCost, alignment_cost))
     return alignment_cost == minCost
 
-def project2_eval_sequences():
+def project2_test_sequences():
     for i in range(1, 5):
         seq1 = read_input_fasta("project_2_examples/seq1_ex" + str(i) + ".txt")
         seq2 = read_input_fasta("project_2_examples/seq2_ex" + str(i) + ".txt")
         alignment_cost = optimal_cost(seq1, seq2, min)
+        print(alignment_cost)
 
+def project2_eval_sequences():
+    global alpha, beta
     seq1 = 'tatggagagaataaaagaactgagagatctaatgtcgcagtcccgcactcgcgagatact' +\
            'cactaagaccactgtggaccatatggccataatcaaaaag'
     seq1 = seq1.upper()
@@ -297,6 +305,9 @@ def project2_eval_sequences():
     seq5 = 'atgagtgacatcgaagccatggcgtctcaaggcaccaaacgatcatatgaacaaatggag' +\
            'actggtggggagcgccaggatgccacagaaatcagagcat'
     seq5 = seq5.upper()
+
+    print('question 1:')
+    print(optimal_cost(seq1, seq2, min))
 
     sequences = [seq1, seq2, seq3, seq4, seq5]
     results = [[None for _ in range(5)] for _ in range(5)]
@@ -371,8 +382,9 @@ def main():
 
     # testSpeed()
     # runTests()
-    testCases()
-    # project2_eval_sequences()
+    # testCases()
+    project2_test_sequences()
+    project2_eval_sequences()
 
 
 if __name__ == '__main__':
