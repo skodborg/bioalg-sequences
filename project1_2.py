@@ -31,10 +31,10 @@ def optimalCostAlignment(sequence1, sequence2):
 	table = [[0 for x in range(len(sequence2) + 1)] for x in range(len(sequence1) + 1)]
 
 	for x in range(1, len(table)):
-		table[x][0] = -5 * x
+		table[x][0] = gapCost * x
 
 	for x in range(1, len(table[0])):
-		table[0][x] = -5 * x
+		table[0][x] = gapCost * x
 
 
 
@@ -59,25 +59,27 @@ def optimalCostAlignment(sequence1, sequence2):
 
 	def backTracking(sequences, x, y):
 		result = table[y][x]
-
 		if(x == 0 and y == 0):
 			backtrackingSequences.append(sequences)
 			return
 
-		if(table[y-1][x] + gapCost == result):
+
+		if(y > 0 and table[y-1][x] + gapCost == result):
 			tempSeq1 = sequence1[y-1] + sequences[0]
 			tempSeq2 = "-" + sequences[1]
 			backTracking((tempSeq1, tempSeq2), x, y-1)
 
-		if(table[y][x-1] + gapCost == result):
+
+		if(x > 0 and table[y][x-1] + gapCost == result):
 			tempSeq1 = "-" + sequences[0]
 			tempSeq2 = sequence2[x-1] + sequences[1]
 			backTracking((tempSeq1, tempSeq2), x-1, y)
 
+
 		char1 = sequence1[y-1]
 		char2 = sequence2[x-1]
 
-		if(table[y-1][x-1] + mSub[d[char1]][d[char2]] == result):
+		if((y > 0 and x > 0) and table[y-1][x-1] + mSub[d[char1]][d[char2]] == result):
 			tempSeq1 = char1 + sequences[0]
 			tempSeq2 = char2 + sequences[1]
 
@@ -95,9 +97,11 @@ def read_input(aFile):
 
 
 
-#def main():
+def main():
 	#fastaSequence1 = read_input("project_2_examples/seq1_ex1.txt")[6:].replace(" ","").replace("\n", "").upper()
 	#fastaSequence2 = read_input("project_2_examples/seq2_ex1.txt")[6:].replace(" ","").replace("\n", "").upper()
+	backtrack = optimalCostAlignment("AA", "AA")
+	print(len(backtrack))
 
 
 if __name__ == '__main__':
