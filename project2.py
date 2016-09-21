@@ -24,9 +24,9 @@ def optimal_cost(seq1, seq2, optimizer_func=max):
     optimal = optimizer_func
     loc_alpha = alpha
     loc_beta = beta
-    if optimal == min:
-        loc_alpha = -alpha
-        loc_beta = -beta  
+    # if optimal == min:
+    #     loc_alpha = -alpha
+    #     loc_beta = -beta  
 
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
@@ -270,14 +270,13 @@ def testCostAgaisntBruteForce(seq1, seq2):
     minCost = float("inf")
 
     for x in allS:
-        minCost = min(minCost, cost(x, alpha, beta, mSub))
+        minCost = min(minCost, cost(x, abs(alpha), abs(beta), mSub))
 
     alignment_cost = optimal_cost(seq1, seq2, min)
+    print('min: %i   alignment: %i' % (minCost, alignment_cost))
     return alignment_cost == minCost
 
 def project2_eval_sequences():
-    alpha = -5
-    beta = -5
     for i in range(1, 5):
         seq1 = read_input_fasta("project_2_examples/seq1_ex" + str(i) + ".txt")
         seq2 = read_input_fasta("project_2_examples/seq2_ex" + str(i) + ".txt")
@@ -370,7 +369,10 @@ def main():
     mSub = scoreMatrix  
     alph = alphabet
 
-    testSpeed()
+    # testSpeed()
+    # runTests()
+    testCases()
+    # project2_eval_sequences()
 
 
 if __name__ == '__main__':
