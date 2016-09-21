@@ -1,6 +1,7 @@
 import numpy as np
 import argparse
-
+import random as rnd
+import project1_2 as prj1
 
 
 alph = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
@@ -202,6 +203,32 @@ def backtrack(seq1, seq2, table):
                 else:
                     k = k + 1
     return (sequence1, sequence2)
+
+def generate_random_seq():
+    chars = ['A', 'C', 'G', 'T']
+    seq = ''
+    length = rnd.randint(3,7)
+    for _ in range(length):
+        seq += chars[rnd.randint(0,3)]
+    return seq
+
+def bruteforce_min_cost(seq1, seq2):
+    global alpha, beta, mSub
+    # find all possible alignments
+    alignment_tuples = prj1.optimalCostAlignment(seq1, seq2)
+
+    # calculate cost of each, keeping track of minimum cost
+    min_cost = float('inf')
+    min_cost_alignment = None
+
+    for tup in alignment_tuples:
+        curr_cost = cost(tup, alpha, beta, mSub)
+        print('%i   --   %s' % (curr_cost, str(tup)))
+        if curr_cost < min_cost:
+            min_cost = curr_cost
+            min_cost_alignment = tup
+
+    return min_cost, min_cost_alignment
     
 
 def runTests():
@@ -218,6 +245,7 @@ def runTests():
 
         alignment_cost = optimal_cost(seq1, seq2, min)
         #print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
+
         
 
 def main():
@@ -229,6 +257,10 @@ def main():
     parser.add_argument("--seq1", help=input_seq1)
     input_seq2 = "Path to FASTA file containing the second sequence"
     parser.add_argument("--seq2", help=input_seq2)
+    input_alpha = "alpha value to be used in cost function"
+    parser.add_argument("--alpha", help=input_alpha, type=int)
+    input_beta = "beta value to be used in cost function"
+    parser.add_argument("--beta", help=input_beta, type=int)
     input_scoreMatrix = "Path to a file containing the score matrix"
     parser.add_argument("--scoreMatrix", help=input_scoreMatrix)
 
@@ -246,12 +278,19 @@ def main():
     else:
         scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score('scorematrix.txt')
 
+    # overrides whatever is in the scorematrix file
+    if args.alpha:
+        alphaCost = args.alpha
+    if args.beta:
+        betaCost = args.beta
+
     alpha = alphaCost
     beta = betaCost
     mSub = scoreMatrix  
     alph = alphabet
     
-    runTests()
+    # runTests()
+    print(bruteforce_min_cost('AA', 'AA'))
     
 
 
