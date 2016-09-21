@@ -329,9 +329,9 @@ def main():
         seq2 = read_input_fasta('fasta2.txt')
 
     if args.scoreMatrix:
-        scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score(args.scoreMatrix)
+        ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score(args.scoreMatrix)
     else:
-        scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score('scorematrix.txt')
+        ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score('project_2_examples/scorematrix_1.txt')
 
     # overrides whatever is in the scorematrix file
     if args.alpha:
