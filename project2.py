@@ -2,14 +2,13 @@ import numpy as np
 import argparse
 import random as rnd
 import project1_2 as prj1
-
+import time
 
 alph = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
 
 alpha = 5
-beta = 0
-def gapcost(k):
-    return beta + k * alpha
+beta = 5
+
 
 #         A,  C,  G,  T
 mSub = [[10,  2,  5,  2],  # A
@@ -19,17 +18,19 @@ mSub = [[10,  2,  5,  2],  # A
 
 
 optimal = min
+toggle = True
 
 def optimal_cost(seq1, seq2, optimizer_func=max):
     global alpha, beta
     optimal = optimizer_func
+    loc_alpha = alpha
+    loc_beta = beta
     if optimal == min:
-        alpha = -alpha
-        beta = -beta
+        loc_alpha = -alpha
+        loc_beta = -beta  
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
-
     # recursions
     def S(i, j):
         values = []
@@ -69,16 +70,16 @@ def optimal_cost(seq1, seq2, optimizer_func=max):
         if i > 0 and j >= 0:
             mS_lookup = mS[i - 1][j]
             if mS_lookup:
-                values.append(mS_lookup - (alpha + beta))
+                values.append(mS_lookup - (loc_alpha + loc_beta))
             else:
-                values.append(S(i - 1, j) - (alpha + beta))
+                values.append(S(i - 1, j) - (loc_alpha + loc_beta))
 
         if i > 1 and j >= 0:
             mD_lookup = mD[i - 1][j]
             if mD_lookup:
-                values.append(mD_lookup - alpha)
+                values.append(mD_lookup - loc_alpha)
             else:
-                values.append(D(i - 1, j) - alpha)
+                values.append(D(i - 1, j) - loc_alpha)
 
         opt_value = optimal(values)
         mD[i][j] = opt_value
@@ -90,16 +91,16 @@ def optimal_cost(seq1, seq2, optimizer_func=max):
         if i >= 0 and j > 0:
             mS_lookup = mS[i][j - 1]
             if mS_lookup:
-                values.append(mS_lookup - (alpha + beta))
+                values.append(mS_lookup - (loc_alpha + loc_beta))
             else:
-                values.append(S(i, j - 1) - (alpha + beta))
+                values.append(S(i, j - 1) - (loc_alpha + loc_beta))
 
         if i >=0 and j > 1:
             mI_lookup = mI[i][j - 1]
             if mI_lookup:
-                values.append(mI_lookup - alpha)
+                values.append(mI_lookup - loc_alpha)
             else:
-                values.append(I(i, j - 1) - alpha)
+                values.append(I(i, j - 1) - loc_alpha)
 
         opt_value = optimal(values)
         mI[i][j] = opt_value
@@ -110,6 +111,7 @@ def optimal_cost(seq1, seq2, optimizer_func=max):
     return result
 
 def cost(str_tuple, alpha, beta, mSub):
+
     def subst_cost(pair):
         cost = mSub[alph[pair[0]]][alph[pair[1]]]
         return cost
@@ -167,6 +169,15 @@ def backtrack(seq1, seq2, table):
         cost = mSub[alph[p1]][alph[p2]]
         return cost
 
+    def gap_cost(k):
+        return loc_beta + k * loc_alpha
+
+    loc_alpha = alpha
+    loc_beta = beta
+    if optimal == min:
+        loc_alpha = -alpha
+        loc_beta = -beta 
+
     i = len(seq1)
     j = len(seq2)
     sequence1 = ""
@@ -182,7 +193,7 @@ def backtrack(seq1, seq2, table):
         else:
             k = 1
             while (1):
-                if(i >= k and table[i][j] == table[i-k][j] - gapcost(k)):
+                if(i >= k and table[i][j] == table[i-k][j] - gap_cost(k)):
                     
                     slashes = "-" * k
                     sequence2 = slashes + sequence2
@@ -190,7 +201,7 @@ def backtrack(seq1, seq2, table):
                     i = i - k
                     break
 
-                elif(j >= k and table[i][j] == table[i][j-k] - gapcost(k)):
+                elif(j >= k and table[i][j] == table[i][j-k] - gap_cost(k)):
 
                     
                     slashes = "-" * k
@@ -207,6 +218,13 @@ def generate_random_seq():
     chars = ['A', 'C', 'G', 'T']
     seq = ''
     length = rnd.randint(3,7)
+    for _ in range(length):
+        seq += chars[rnd.randint(0,3)]
+    return seq
+
+def generate_random_seq_with_length(length):
+    chars = ['A', 'C', 'G', 'T']
+    seq = ''
     for _ in range(length):
         seq += chars[rnd.randint(0,3)]
     return seq
@@ -255,7 +273,6 @@ def testCostAgaisntBruteForce(seq1, seq2):
         minCost = min(minCost, cost(x, alpha, beta, mSub))
 
     alignment_cost = optimal_cost(seq1, seq2, min)
-    print("align: " + str(alignment_cost) + " " + str(minCost))
     return alignment_cost == minCost
 
 
@@ -273,6 +290,11 @@ def testCases():
     for _ in range(3):
         assert testCostAgaisntBruteForce(generate_random_seq(), generate_random_seq())
 
+def testSpeed():
+    for i in range(90):
+        start_time = time.time()
+        optimal_cost(generate_random_seq_with_length(i), generate_random_seq_with_length(i*5), min)
+        print(str(i*5) + ",     " + str((time.time() - start_time)))
 
 
 def main():
@@ -315,11 +337,12 @@ def main():
     beta = betaCost
     mSub = scoreMatrix  
     alph = alphabet
-    testCases()
+    #testCases()
     #runTests()
+    testSpeed()
     #print(bruteforce_min_cost('AA', 'AA'))
     
 
 if __name__ == '__main__':
-    #main()
-    testCases()
+    main()
+    
