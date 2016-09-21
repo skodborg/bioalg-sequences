@@ -19,7 +19,6 @@ mSub = [[10,  2,  5,  2],  # A
 
 optimal = min
 
-
 def optimal_cost(seq1, seq2, optimizer_func=max):
     global alpha, beta
     optimal = optimizer_func
@@ -103,7 +102,7 @@ def optimal_cost(seq1, seq2, optimizer_func=max):
         return opt_value
 
     result = S(len(seq1), len(seq2)) 
-    print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
+    #print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
     return result
 
 def cost(str_tuple, alpha, beta, mSub):
@@ -240,7 +239,7 @@ def runTests():
         alph = alphabet
 
         alignment_cost = optimal_cost(seq1, seq2, min)
-        #print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
+        print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
 
         
 def testCostAgaisntBruteForce(seq1, seq2):
@@ -252,9 +251,12 @@ def testCostAgaisntBruteForce(seq1, seq2):
         minCost = min(minCost, cost(x, alpha, beta, mSub))
 
     alignment_cost = optimal_cost(seq1, seq2, min)
+    print("align: " + str(alignment_cost) + " " + str(minCost))
     return alignment_cost == minCost
 
 def project2_eval_sequences():
+    alpha = -5
+    beta = -5
     for i in range(1, 5):
         seq1 = read_input_fasta("project_2_examples/seq1_ex" + str(i) + ".txt")
         seq2 = read_input_fasta("project_2_examples/seq2_ex" + str(i) + ".txt")
@@ -281,14 +283,25 @@ def project2_eval_sequences():
     for i in range(5):
         for j in range(5):
             results[i][j] = optimal_cost(sequences[i], sequences[j], min)
-    print('\n\n')
     print(np.array(results))
 
     optimal_cost(seq1, seq2, min)
 
 def testCases():
+    # global mSub, alpha, beta, alph
+    # main()
+    # scoreMatrixTotal = ((alphaCost, betaCost), alphabet, scoreMatrix) = read_input_score('project_2_examples/scorematrix_1.txt')
+    # alpha = alphaCost
+    # beta = betaCost
+    # mSub = scoreMatrix  
+    # alph = alphabet
+
     assert testCostAgaisntBruteForce("ACT", "AAA")
     assert testCostAgaisntBruteForce("ACC", "ATT")
+    for _ in range(3):
+        assert testCostAgaisntBruteForce(generate_random_seq(), generate_random_seq())
+
+
 
 def main():
     global mSub, alpha, beta, alph
@@ -333,8 +346,8 @@ def main():
     
     # runTests()
     # print(bruteforce_min_cost('AA', 'AA'))
-
-    project2_eval_sequences()
+    # project2_eval_sequences()
+    testCases()
     
 
 if __name__ == '__main__':
