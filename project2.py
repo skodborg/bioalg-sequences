@@ -247,6 +247,20 @@ def runTests():
         #print('%s\n%s\n%i\n' % (seq1, seq2, alignment_cost))
 
         
+def testCostAgaisntBruteForce(seq1, seq2):
+    allS = prj1.optimalCostAlignment(seq1, seq2)
+
+    minCost = float("inf")
+
+    for x in allS:
+        minCost = min(minCost, cost(x, alpha, beta, mSub))
+
+    alignment_cost = optimal_cost(seq1, seq2, min)
+    return alignment_cost == minCost
+
+def testCases():
+    assert testCostAgaisntBruteForce("ACT", "AAA")
+    assert testCostAgaisntBruteForce("ACC", "ATT")
 
 def main():
     global mSub, alpha, beta, alph
@@ -293,6 +307,6 @@ def main():
     print(bruteforce_min_cost('AA', 'AA'))
     
 
-
 if __name__ == '__main__':
-    main()
+    #main()
+    testCases()
