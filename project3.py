@@ -66,7 +66,7 @@ def recursive_msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
         min_val = min(v0, v1, v2, v3, v4, v5, v6)
         T[i][j][k] = min_val
         return min_val
-        # TODO: implement
+
     print(rec_helper(len(seq1)-1, len(seq2)-1, len(seq3)-1))
 
 
