@@ -33,6 +33,31 @@ def sp_func(substmatrix, gapcost, alph):
 
     return returnFunction
 
+def recursive_msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
+    sp = sp_func(substmatrix, gapcost, alphabet)
+    def rec_helper(i, j, k):
+        if i == 0 and j == 0 and k == 0:
+            return 0
+
+        v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = float('inf')
+
+        if i > 0 and j > 0 and k > 0:
+            v0 = rec_helper(i - 1, j - 1, k - 1) + sp(seq1[i], seq2[j], seq3[k])
+        if i > 0 and j > 0 and k >= 0:
+            v1 = rec_helper(i - 1, j - 1, k) + sp(seq1[i], seq2[j], '-')
+        if i > 0 and j >= 0 and k > 0:
+            v2 = rec_helper(i - 1, j, k - 1) + sp(seq1[i], '-', seq3[k])
+        if i >= 0 and j > 0 and k > 0:
+            v3 = rec_helper(i, j - 1, k - 1) + sp('-', seq2[j], seq3[k])
+        if i > 0 and j >= 0 and k >= 0:
+            v4 = rec_helper(i - 1, j, k) + sp(seq1[i], '-', '-')
+        if i >= 0 and j > 0 and k >= 0:
+            v5 = rec_helper(i, j - 1, k) + sp('-', seq2[j], '-')
+        if i >= 0 and j >= 0 and k > 0:
+            v6 = rec_helper(i, j, k - 1) + sp('-', '-', seq3[k])
+        return min(v0, v1, v2, v3, v4, v5, v6)
+        # TODO: implement
+    return rec_helper(len(seq1)-1, len(seq2)-1, len(seq3)-1)
 
 
 def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
@@ -75,7 +100,8 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
 
 
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
-    msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    # msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    recursive_msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
 
 
 def test_sp(substmatrix, alphabet):
