@@ -55,7 +55,7 @@ def main():
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
 
-    msa(seq1, seq2, seq3, substmatrix, 5)
+    run_tests(seq1, seq2, seq3, substmatrix)
 
 
 
