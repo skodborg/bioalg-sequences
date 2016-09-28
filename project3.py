@@ -74,7 +74,38 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
     msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
 
+
+def test_sp(substmatrix, alphabet):
     # test of sp
+
+
+    sp = sp_func(substmatrix, 5, alphabet)
+    # Check no GAP; sub(A[i], B[j]) + sub(B[j], C[k]) + sub(A[i], C[k])
+    #               sub("A", "C") + sub("C", "G") + sub("A", "G")
+    #               5 + 5 + 2
+    assert(sp("A", "C", "G") == 12)
+
+    # Check C GAP; sub(A[i], B[j]) + gap + gap
+    #              sub("G", "C") + gap + gap
+    #              5 + 5 + 5 
+    assert(sp("G", "C", "-") == 15)
+
+    # Check B GAP; gap + sub(A[i], C[k]) + gap
+    #              gap + sub("G", "A") + gap
+    #              5 + 2 + 5 
+    assert(sp("G", "-", "A") == 12)
+
+    # Check A GAP; gap + gap + sub(B[j], C[k])
+    #              gap + gap + sub("C", "G")
+    #              5 + 5 + 5 
+    assert(sp("-", "C", "G") == 15)
+
+    # Check multiple GAP; gap + gap
+    #                     5 + 5
+    assert(sp("-", "C", "-") == 10)
+    assert(sp("-", "-", "G") == 10)
+    assert(sp("A", "-", "-") == 10)
+    assert(sp("-", "-", "-") == 10)
 
 
 
