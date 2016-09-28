@@ -7,9 +7,14 @@ def sp_func(substmatrix, gapcost, alph):
         return char == '-'
 
     def returnFunction(char1, char2, char3):
+        if hasGap(char1) and hasGap(char2) and hasGap(char3):
+            return 0
+
         if(not hasGap(char1) and not hasGap(char2) and not hasGap(char3)):
             # return sub(A[i], B[j]) + sub(B[j], C[k]) + sub(A[i], C[k])
-            return substmatrix[alph[char1]][alph[char2]] + substmatrix[alph[char2]][alph[char3]] + substmatrix[alph[char1]][alph[char3]]
+            return substmatrix[alph[char1]][alph[char2]] + \
+                   substmatrix[alph[char2]][alph[char3]] + \
+                   substmatrix[alph[char1]][alph[char3]]
         
         if(not hasGap(char1) and not hasGap(char2) and hasGap(char3)):
             # return sub(A[i], B[j]) + gap + gap
@@ -27,8 +32,6 @@ def sp_func(substmatrix, gapcost, alph):
         return gapcost + gapcost
 
     return returnFunction
-
-
 
 
 
@@ -63,7 +66,7 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
                     v7 = T[i][j][k - 1] + sp('-', '-', seq3[k])
                 T[i][j][k] = min(v0, v1, v2, v3, v4, v5, v6, v7)
     
-    print(np.array(T))
+    print(np.array(T).shape)
     
     lastx = len(seq1) - 1
     lasty = len(seq2) - 1
@@ -76,36 +79,46 @@ def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
 
 
 def test_sp(substmatrix, alphabet):
-    # test of sp
-
+    #    A  C  G  T
+    # A  0  5  2  5
+    # C  5  0  5  2
+    # G  2  5  0  5
+    # T  5  2  5  0
 
     sp = sp_func(substmatrix, 5, alphabet)
+
     # Check no GAP; sub(A[i], B[j]) + sub(B[j], C[k]) + sub(A[i], C[k])
     #               sub("A", "C") + sub("C", "G") + sub("A", "G")
     #               5 + 5 + 2
     assert(sp("A", "C", "G") == 12)
+    assert(sp('A', 'A', 'A') == 0)
+    assert(sp('A', 'T', 'A') == 10)
+    assert(sp('A', 'T', 'G') == 12)
 
     # Check C GAP; sub(A[i], B[j]) + gap + gap
     #              sub("G", "C") + gap + gap
     #              5 + 5 + 5 
     assert(sp("G", "C", "-") == 15)
+    assert(sp('A', 'A', '-') == 10)
 
     # Check B GAP; gap + sub(A[i], C[k]) + gap
     #              gap + sub("G", "A") + gap
     #              5 + 2 + 5 
     assert(sp("G", "-", "A") == 12)
+    assert(sp("G", "-", "G") == 10)
 
     # Check A GAP; gap + gap + sub(B[j], C[k])
     #              gap + gap + sub("C", "G")
     #              5 + 5 + 5 
     assert(sp("-", "C", "G") == 15)
+    assert(sp("-", "C", "C") == 10)
 
     # Check multiple GAP; gap + gap
     #                     5 + 5
     assert(sp("-", "C", "-") == 10)
     assert(sp("-", "-", "G") == 10)
     assert(sp("A", "-", "-") == 10)
-    assert(sp("-", "-", "-") == 10)
+    assert(sp("-", "-", "-") == 0)
 
 
 
@@ -127,16 +140,17 @@ def main():
     # seq2 = read_input_fasta(args.seq2)
     # seq3 = read_input_fasta(args.seq3)
 
-    # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
-    # seq2 = 'ATGGATTTATCTGCTCTTCG'
-    # seq3 = 'TGCATGCTGAAACTTCTCAACCA'
+    seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
+    seq2 = 'ATGGATTTATCTGCTCTTCG'
+    seq3 = 'TGCATGCTGAAACTTCTCAACCA'
 
-    seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCCAAGCGGCCGGTTTCCTTGGCGACGGAGAGCGCGGGAATTTTAGATAGATTGTAATTGCGGCTGCGCGGCCGCTGCCCGTGCAGCCAGAGGATCCAGCACCTCTCTTGGGGCTTCTCCGTCCTCGGCGCTTGGAAGTACGGATCTTTTTTCTCGGAGAAAAGTTCACTGGAACTG'
-    seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
-    seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
+    # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCCAAGCGGCCGGTTTCCTTGGCGACGGAGAGCGCGGGAATTTTAGATAGATTGTAATTGCGGCTGCGCGGCCGCTGCCCGTGCAGCCAGAGGATCCAGCACCTCTCTTGGGGCTTCTCCGTCCTCGGCGCTTGGAAGTACGGATCTTTTTTCTCGGAGAAAAGTTCACTGGAACTG'
+    # seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
+    # seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
     
+    test_sp(substmatrix, alphabet)
     run_tests(seq1, seq2, seq3, substmatrix, alphabet)
 
 
