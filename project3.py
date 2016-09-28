@@ -1,9 +1,9 @@
 import numpy as np
+import argparse
 import project2 as prj2
 
-def sp(char1, char2, char3, substmatrix, gapcost):
+def sp(char1, char2, char3):
     # TODO: implement
-    pass
 
 
 
@@ -16,7 +16,7 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost):
     for i in len1:
         for j in len2:
             for k in len3:
-                v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = None
+                v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = float('inf')
 
                 if i == 0 and j == 0 and k == 0:
                     v0 = 0
@@ -26,7 +26,22 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost):
                     v2 = T[i - 1][j - 1][k] + sp(seq1[i], seq2[j], '-')
                 if i > 0 and j >= 0 and k > 0:
                     v3 = T[i - 1][j][k - 1] + sp(seq1[i], '-', seq3[k])
-    # TODO: complete implementation
+                if i >= 0 and j > 0 and k > 0:
+                    v4 = T[i][j - 1][k - 1] + sp('-', seq2[j], seq3[k])
+                if i > 0 and j >= 0 and k >= 0:
+                    v5 = T[i - 1][j][k] + sp(seq1[i], '-', '-')
+                if i >= 0 and j > 0 and k >= 0:
+                    v6 = T[i][j - 1][k] + sp('-', seq2[j], '-')
+                if i >= 0 and j >= 0 and k > 0:
+                    v7 = T[i][j][k - 1] + sp('-', '-', seq3[k])
+                T[i][j][k] = min(v0, v1, v2, v3, v4, v5, v6, v7)
+    
+    print(np.array(T))
+    
+    lastx = len(seq1) - 1
+    lasty = len(seq2) - 1
+    lastz = len(seq3) - 1
+    print(T[lastx][lasty][lastz])
 
 
 def run_tests(seq1, seq2, seq3, substmatrix):
