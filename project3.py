@@ -64,9 +64,9 @@ def main():
     # seq1 = read_input_fasta(args.seq1)
     # seq2 = read_input_fasta(args.seq2)
     # seq3 = read_input_fasta(args.seq3)
-    seq1 = 'AAA'
-    seq2 = 'CCC'
-    seq3 = 'GGG'
+    seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
+    seq2 = 'ATGGATTTATCTGCTCTTCG'
+    seq3 = 'TGCATGCTGAAACTTCTCAACCA'
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
 
