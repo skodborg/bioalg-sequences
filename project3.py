@@ -2,12 +2,37 @@ import numpy as np
 import argparse
 import project2 as prj2
 
-def sp(char1, char2, char3):
-    # TODO: implement
+def sp(char1, char2, char3, substmatrix, gapcost):
+    alph = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
+
+
+    def hasGap(char):
+        return char == '-'
+
+    if(not hasGap(char1) and not hasGap(char2) and not hasGap(char3)):
+        # return sub(A[i], B[j]) + sub(B[j], C[k]) + sub(A[i], C[k])
+        return substmatrix[alph[char1]][alph[char2]] + substmatrix[alph[char2]][alph[char3]] + substmatrix[alph[char1]][alph[char3]]
+    
+    if(not hasGap(char1) and not hasGap(char2) and hasGap(char3)):
+        # return sub(A[i], B[j]) + gap + gap
+        return substmatrix[alph[char1]][alph[char2]] + gapcost + gapcost
+
+    if(not hasGap(char1) and hasGap(char2) and not hasGap(char3)):
+        # return gap + sub(A[i], C[k]) + gap
+        return gapcost + substmatrix[alph[char1]][alph[char3]] + gapcost
+
+    if(hasGap(char1) and not hasGap(char2) and not hasGap(char3)):
+        #return gap + gap + sub(B[j], C[k])
+        return gapcost + gapcost + substmatrix[alph[char2]][[char3]]
+
+
+    return gapcost + gapcost
 
 
 
-def msa(seq1, seq2, seq3, substmatrix, gapcost):
+
+
+def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     len1 = range(len(seq1))
     len2 = range(len(seq2))
     len3 = range(len(seq3))
@@ -44,8 +69,8 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost):
     print(T[lastx][lasty][lastz])
 
 
-def run_tests(seq1, seq2, seq3, substmatrix):
-    msa(seq1, seq2, seq3, substmatrix, 5)
+def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
+    msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -69,8 +94,8 @@ def main():
     seq3 = 'TGCATGCTGAAACTTCTCAACCA'
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
-
-    run_tests(seq1, seq2, seq3, substmatrix)
+    
+    run_tests(seq1, seq2, seq3, substmatrix, alphabet)
 
 
 
