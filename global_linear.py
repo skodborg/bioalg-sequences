@@ -2,8 +2,8 @@ import argparse
 import project2 as p2
 
 
-def optimal_cost(seq1, seq2, substmatrixfile, gapcost, backtrack=False):
-    alphabet, substmatrix = p2.read_input_score(substmatrixfile)
+def optimal_cost(seq1, seq2, alphabet, substmatrix, gapcost, backtrack=False):
+    # alphabet, substmatrix = p2.read_input_score(substmatrixfile)
     p2.alpha = gapcost
     p2.beta = 0
     p2.mSub = substmatrix

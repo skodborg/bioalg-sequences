@@ -122,9 +122,44 @@ def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     print(T[last1][last2][last3])
 
 
+def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
+    a = alphabet
+    sm = substmatrix
+    g = gapcost
+
+    min_sumcost = float('inf')
+    seq_min_sumcost = ''
+    for seqi in sequences:
+        seqi_sumcost = 0
+        for seqj in sequences:
+            if seqi == seqj:
+                continue  # same sequence, skip comparison
+            seqi_sumcost += glin.optimal_cost(seqi, seqj, a, sm, g)[0]
+        if seqi_sumcost < min_sumcost:
+            # found a sequence with a smaller sumcost of global alignments
+            min_sumcost = seqi_sumcost
+            seq_min_sumcost = seqi
+
+    print('%s with sumcost: %i' % (seq_min_sumcost, min_sumcost))
+    # above takes O(k^2 * n^2)
+    # k^2 for the nested for-loops through 'sequences', n^2 for global alignment
+    
+    M = []
+    Sc = seq_min_sumcost  # center string in star tree
+    sequences.remove(Sc)  # remaining k - 1 strings
+
+    for seq in sequences:
+        cost, alignment = glin.optimal_cost(Sc, seq, a, sm, g, True)
+        print(alignment)
+        # TODO: COMPLETE IMPLEMENTATION
+
+
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
     sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
     recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    print()
+    sequences = ['AGT', 'AGGG', 'AGG']
+    sp_approx_2(sequences, alphabet, substmatrix, 5)
 
 
 def test_sp(substmatrix, alphabet):
