@@ -169,14 +169,10 @@ def test_sp(substmatrix, alphabet):
     assert(sp("A", "-", "-") == 10)
     assert(sp("-", "-", "-") == 0)
 
-def read_input(aFile):
-    f = open(aFile, 'r', encoding='latin1')
-    return f.read()
-
 
 def read_input_fasta(aFile):
     array = []
-    inputFile = read_input(aFile)
+    inputFile = prj2.read_input(aFile)
 
     lines = inputFile.split(">")
     lines.pop(0)
