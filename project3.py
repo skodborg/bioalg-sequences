@@ -169,6 +169,25 @@ def test_sp(substmatrix, alphabet):
     assert(sp("A", "-", "-") == 10)
     assert(sp("-", "-", "-") == 0)
 
+def read_input(aFile):
+    f = open(aFile, 'r', encoding='latin1')
+    return f.read()
+
+
+def read_input_fasta(aFile):
+    array = []
+    inputFile = read_input(aFile)
+
+    lines = inputFile.split(">")
+    lines.pop(0)
+
+    for i in lines:
+        name = i.split('\n', 1)[0]
+        value = i.split('\n', 1)[1].replace("\n", "")
+        array.append((name, value))
+
+    return array
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -195,6 +214,7 @@ def main():
     # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCCAAGCGGCCGGTTTCCTTGGCGACGGAGAGCGCGGGAATTTTAGATAGATTGTAATTGCGGCTGCGCGGCCGCTGCCCGTGCAGCCAGAGGATCCAGCACCTCTCTTGGGGCTTCTCCGTCCTCGGCGCTTGGAAGTACGGATCTTTTTTCTCGGAGAAAAGTTCACTGGAACTG'
     # seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
     # seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
+
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
 
