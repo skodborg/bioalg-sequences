@@ -33,7 +33,7 @@ def sp_func(substmatrix, gapcost, alph):
     return returnFunction
 
 
-def recursive_msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
+def recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     len1 = range(len(seq1) + 1)
     len2 = range(len(seq2) + 1)
     len3 = range(len(seq3) + 1)
@@ -80,7 +80,7 @@ def recursive_msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     print(rec_helper(len(seq1), len(seq2), len(seq3)))
 
 
-def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
+def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     len1 = range(len(seq1) + 1)
     len2 = range(len(seq2) + 1)
     len3 = range(len(seq3) + 1)
@@ -122,8 +122,8 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
 
 
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
-    msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
-    recursive_msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
 
 
 def test_sp(substmatrix, alphabet):
