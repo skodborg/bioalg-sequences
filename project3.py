@@ -157,6 +157,25 @@ def test_sp(substmatrix, alphabet):
     assert(sp("-", "-", "-") == 0)
 
 
+def read_input(aFile):
+    f = open(aFile, 'r', encoding='latin1')
+    return f.read()
+
+
+def read_input_fasta(aFile):
+    array = []
+    inputFile = read_input(aFile)
+
+    lines = inputFile.split(">")
+    lines.pop(0)
+
+    for i in lines:
+        name = i.split('\n', 1)[0]
+        value = i.split('\n', 1)[1].replace("\n", "")
+        array.append((name, value))
+
+    return array
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -184,11 +203,11 @@ def main():
     seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
     seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
 
-    alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
+    #alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
     
-    test_sp(substmatrix, alphabet)
-    run_tests(seq1, seq2, seq3, substmatrix, alphabet)
-
+    #test_sp(substmatrix, alphabet)
+    #run_tests(seq1, seq2, seq3, substmatrix, alphabet)
+    read_input_fasta("brca1-testseqs.fasta")
 
 
 if __name__ == '__main__':
