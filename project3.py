@@ -1,5 +1,6 @@
 import argparse
 import project2 as prj2
+import global_linear as glin
 
 
 def sp_func(substmatrix, gapcost, alph):
