@@ -35,7 +35,15 @@ def sp_func(substmatrix, gapcost, alph):
 
 def recursive_msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     sp = sp_func(substmatrix, gapcost, alphabet)
+    len1 = range(len(seq1))
+    len2 = range(len(seq2))
+    len3 = range(len(seq3))
+    T = [[[None for _ in len3] for _ in len2] for _ in len1]
+
     def rec_helper(i, j, k):
+        if T[i][j][k]:
+            return T[i][j][k]
+
         if i == 0 and j == 0 and k == 0:
             return 0
 
@@ -55,9 +63,11 @@ def recursive_msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
             v5 = rec_helper(i, j - 1, k) + sp('-', seq2[j-1], '-')
         if i >= 0 and j >= 0 and k > 0:
             v6 = rec_helper(i, j, k - 1) + sp('-', '-', seq3[k-1])
-        return min(v0, v1, v2, v3, v4, v5, v6)
-        # TODO: implement
-    return rec_helper(len(seq1)-1, len(seq2)-1, len(seq3)-1)
+            
+        min_val = min(v0, v1, v2, v3, v4, v5, v6)
+        T[i][j][k] = min_val
+        return min_val
+
 
 
 def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
