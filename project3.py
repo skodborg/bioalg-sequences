@@ -42,28 +42,28 @@ def recursive_msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
         v0 = v1 = v2 = v3 = v4 = v5 = v6 = v7 = float('inf')
 
         if i > 0 and j > 0 and k > 0:
-            v0 = rec_helper(i - 1, j - 1, k - 1) + sp(seq1[i], seq2[j], seq3[k])
+            v0 = rec_helper(i - 1, j - 1, k - 1) + sp(seq1[i-1], seq2[j-1], seq3[k-1])
         if i > 0 and j > 0 and k >= 0:
-            v1 = rec_helper(i - 1, j - 1, k) + sp(seq1[i], seq2[j], '-')
+            v1 = rec_helper(i - 1, j - 1, k) + sp(seq1[i-1], seq2[j-1], '-')
         if i > 0 and j >= 0 and k > 0:
-            v2 = rec_helper(i - 1, j, k - 1) + sp(seq1[i], '-', seq3[k])
+            v2 = rec_helper(i - 1, j, k - 1) + sp(seq1[i-1], '-', seq3[k-1])
         if i >= 0 and j > 0 and k > 0:
-            v3 = rec_helper(i, j - 1, k - 1) + sp('-', seq2[j], seq3[k])
+            v3 = rec_helper(i, j - 1, k - 1) + sp('-', seq2[j-1], seq3[k-1])
         if i > 0 and j >= 0 and k >= 0:
-            v4 = rec_helper(i - 1, j, k) + sp(seq1[i], '-', '-')
+            v4 = rec_helper(i - 1, j, k) + sp(seq1[i-1], '-', '-')
         if i >= 0 and j > 0 and k >= 0:
-            v5 = rec_helper(i, j - 1, k) + sp('-', seq2[j], '-')
+            v5 = rec_helper(i, j - 1, k) + sp('-', seq2[j-1], '-')
         if i >= 0 and j >= 0 and k > 0:
-            v6 = rec_helper(i, j, k - 1) + sp('-', '-', seq3[k])
+            v6 = rec_helper(i, j, k - 1) + sp('-', '-', seq3[k-1])
         return min(v0, v1, v2, v3, v4, v5, v6)
         # TODO: implement
     return rec_helper(len(seq1)-1, len(seq2)-1, len(seq3)-1)
 
 
 def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
-    len1 = range(len(seq1))
-    len2 = range(len(seq2))
-    len3 = range(len(seq3))
+    len1 = range(len(seq1)+1)
+    len2 = range(len(seq2)+1)
+    len3 = range(len(seq3)+1)
     sp = sp_func(substmatrix, gapcost, alphabet)
 
     T = [[[None for _ in len3] for _ in len2] for _ in len1]
@@ -76,32 +76,32 @@ def msa(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
                 if i == 0 and j == 0 and k == 0:
                     v0 = 0
                 if i > 0 and j > 0 and k > 0:
-                    v1 = T[i - 1][j - 1][k - 1] + sp(seq1[i], seq2[j], seq3[k])
+                    v1 = T[i - 1][j - 1][k - 1] + sp(seq1[i-1], seq2[j-1], seq3[k-1])
                 if i > 0 and j > 0 and k >= 0:
-                    v2 = T[i - 1][j - 1][k] + sp(seq1[i], seq2[j], '-')
+                    v2 = T[i - 1][j - 1][k] + sp(seq1[i-1], seq2[j-1], '-')
                 if i > 0 and j >= 0 and k > 0:
-                    v3 = T[i - 1][j][k - 1] + sp(seq1[i], '-', seq3[k])
+                    v3 = T[i - 1][j][k - 1] + sp(seq1[i-1], '-', seq3[k-1])
                 if i >= 0 and j > 0 and k > 0:
-                    v4 = T[i][j - 1][k - 1] + sp('-', seq2[j], seq3[k])
+                    v4 = T[i][j - 1][k - 1] + sp('-', seq2[j-1], seq3[k-1])
                 if i > 0 and j >= 0 and k >= 0:
-                    v5 = T[i - 1][j][k] + sp(seq1[i], '-', '-')
+                    v5 = T[i - 1][j][k] + sp(seq1[i-1], '-', '-')
                 if i >= 0 and j > 0 and k >= 0:
-                    v6 = T[i][j - 1][k] + sp('-', seq2[j], '-')
+                    v6 = T[i][j - 1][k] + sp('-', seq2[j-1], '-')
                 if i >= 0 and j >= 0 and k > 0:
-                    v7 = T[i][j][k - 1] + sp('-', '-', seq3[k])
+                    v7 = T[i][j][k - 1] + sp('-', '-', seq3[k-1])
                 T[i][j][k] = min(v0, v1, v2, v3, v4, v5, v6, v7)
     
     print(np.array(T).shape)
     
-    lastx = len(seq1) - 1
-    lasty = len(seq2) - 1
-    lastz = len(seq3) - 1
+    lastx = len(seq1)
+    lasty = len(seq2)
+    lastz = len(seq3)
     print(T[lastx][lasty][lastz])
 
 
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
-    # msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
-    recursive_msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    #recursive_msa(seq1, seq2, seq3, substmatrix, 5, alphabet)
 
 
 def test_sp(substmatrix, alphabet):
@@ -166,13 +166,13 @@ def main():
     # seq2 = read_input_fasta(args.seq2)
     # seq3 = read_input_fasta(args.seq3)
 
-    seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
-    seq2 = 'ATGGATTTATCTGCTCTTCG'
-    seq3 = 'TGCATGCTGAAACTTCTCAACCA'
+    #seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
+    #seq2 = 'ATGGATTTATCTGCTCTTCG'
+    #seq3 = 'TGCATGCTGAAACTTCTCAACCA'
 
-    # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCCAAGCGGCCGGTTTCCTTGGCGACGGAGAGCGCGGGAATTTTAGATAGATTGTAATTGCGGCTGCGCGGCCGCTGCCCGTGCAGCCAGAGGATCCAGCACCTCTCTTGGGGCTTCTCCGTCCTCGGCGCTTGGAAGTACGGATCTTTTTTCTCGGAGAAAAGTTCACTGGAACTG'
-    # seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
-    # seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
+    seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCCAAGCGGCCGGTTTCCTTGGCGACGGAGAGCGCGGGAATTTTAGATAGATTGTAATTGCGGCTGCGCGGCCGCTGCCCGTGCAGCCAGAGGATCCAGCACCTCTCTTGGGGCTTCTCCGTCCTCGGCGCTTGGAAGTACGGATCTTTTTTCTCGGAGAAAAGTTCACTGGAACTG'
+    seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
+    seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
     
