@@ -1,3 +1,4 @@
+import numpy as np
 import argparse
 import project2 as prj2
 import global_linear as glin
@@ -144,21 +145,85 @@ def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
     # above takes O(k^2 * n^2)
     # k^2 for the nested for-loops through 'sequences', n^2 for global alignment
     
-    M = []
     Sc = seq_min_sumcost  # center string in star tree
+    M = [Sc]
     sequences.remove(Sc)  # remaining k - 1 strings
 
+    print('\nalignments: (Sc, Si) where Sc is center string and Si is the ith remaining string')
     for seq in sequences:
         cost, alignment = glin.optimal_cost(Sc, seq, a, sm, g, True)
-        print(alignment)
-        # TODO: COMPLETE IMPLEMENTATION
+        print(str(alignment))
+
+        M0 = M[0]
+        S0 = list(alignment[0])
+        Si = alignment[1]
+        curr_pos_in_M0 = 0
+        pos_of_Sc_in_M0 = []
+        tmp_S0 = [x for x in S0]
+        while tmp_S0:
+            searched_char = tmp_S0.pop(0)
+            if searched_char == '-':
+                continue
+            for i in range(curr_pos_in_M0, len(M0)):
+                if M0[i] == searched_char:
+                    pos_of_Sc_in_M0.append(i)
+                    curr_pos_in_M0 = i + 1
+                    break
+        # print('M0\t\t %s' % (M0))
+        # print('Sc\t\t ACGT')
+        # print('S0\t\t %s' % (str(''.join(S0))))
+        # print('Si\t\t %s' % (Si))
+        # print('pos_of_Sc_in_M0\t %s' % (str(pos_of_Sc_in_M0)))
+
+        Mi = ''
+
+        # inserting initial dashes as found in M0 before processing S0 from left to right
+        if pos_of_Sc_in_M0[0] > 0:
+            Mi += '-' * pos_of_Sc_in_M0[0]
+
+        # processing S0 from left to right, creating Mi as we go
+        curr_pos_in_Sc = 0
+        for i in range(len(S0)):
+            if S0[i] == '-':
+                # found a dash in S0 caused by this alignment with Si,
+                # we have to insert this dash in all other entries in M on
+                # this position
+                dash_pos = pos_of_Sc_in_M0[i]
+                M = list(map(lambda s : s[:dash_pos] + '-' + s[dash_pos:], M))
+
+                # and update Mi with the character in Si on this position, 
+                # which is not a dash
+                Mi += Si[i]
+                
+            else:
+                # S0 contained a character, which means whatever is in Si at
+                # this pos has to go into Mi at this pos too
+                Mi += Si[i]
+
+                # if there are gaps following the character we just processed
+                # present in M0 already, introduced by previous alignment 
+                # processings, we have to include these as well
+                if curr_pos_in_Sc + 1 <= len(pos_of_Sc_in_M0) - 1:
+                    curr = curr_pos_in_Sc
+                    diff = pos_of_Sc_in_M0[curr + 1] - pos_of_Sc_in_M0[curr]
+                    if diff > 1:
+                        Mi += '-' * (diff - 1)
+
+                curr_pos_in_Sc += 1
+
+        M.append(Mi)
+
+        
+    # prettyprint M
+    msa = [[s] for s in M]
+    print('\nmsa:')
+    print(np.array(msa))
 
 
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
-    sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
-    recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
-    print()
-    sequences = ['AGT', 'AGGG', 'AGG']
+    # sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    # recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
+    sequences = ['ACGT', 'ATTCT', 'CTCGA', 'ACGGT']
     sp_approx_2(sequences, alphabet, substmatrix, 5)
 
 
