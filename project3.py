@@ -190,13 +190,17 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost):
                 # found a dash in S0 caused by this alignment with Si,
                 # we have to insert this dash in all other entries in M on
                 # this position
-                if i >= len(pos_of_Sc_in_M0):
+                if curr_pos_in_Sc == len(Sc) - 1:
                     # dash is at the end of S0 in the alignment, 
                     # just append to all strings in M instead
                     M = [s + '-' for s in M]
                 else:
-                    dash_pos = pos_of_Sc_in_M0[i]
+                    dash_pos = pos_of_Sc_in_M0[curr_pos_in_Sc]
                     M = list(map(lambda s : s[:dash_pos] + '-' + s[dash_pos:], M))
+
+                    # we have now mutated M0, we need to recalculate pos_of_Sc_in_M0
+                    # by adding 1 to every 
+                    pos_of_Sc_in_M0 = [e + 1 if e >= dash_pos else e for e in pos_of_Sc_in_M0]
 
                 # and update Mi with the character in Si on this position, 
                 # which is not a dash
