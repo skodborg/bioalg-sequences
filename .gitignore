@@ -90,3 +90,5 @@ ENV/
 
 # Output files
 output.txt
+
+output/
