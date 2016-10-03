@@ -123,10 +123,12 @@ def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     print(T[last1][last2][last3])
 
 
-def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
+def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost):
     a = alphabet
     sm = substmatrix
     g = gapcost
+    sequences = [e[1] for e in sequences_names_tuples]
+    sequences_names = [e[0] for e in sequences_names_tuples]
 
     min_sumcost = float('inf')
     seq_min_sumcost = ''
@@ -221,12 +223,14 @@ def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
     # print M as fasta
     result_str = ''
     f = open('output.txt', 'w')
+    i = 0;
     for s in M:
-        temp_namestr = '>TODO: insert name'
+        temp_namestr = '>'+sequences_names[i]
         print(temp_namestr)
         result_str += temp_namestr + '\n'
         print(s)
         result_str += s + '\n'
+        i += 1
     f.write(result_str)
     f.close()
 
@@ -323,8 +327,8 @@ def main():
 
     # test_sp(substmatrix, alphabet)
     # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
-    sequences = [e[1] for e in sequences_names_tuples]
-    sp_approx_2(sequences, alphabet, substmatrix, 5)
+    
+    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
 
 
 if __name__ == '__main__':
