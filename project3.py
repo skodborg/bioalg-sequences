@@ -2,6 +2,7 @@ import numpy as np
 import argparse
 import project2 as prj2
 import global_linear as glin
+import msa_sp_score_3k as ms_sp
 
 
 def sp_func(substmatrix, gapcost, alph):
@@ -79,7 +80,7 @@ def recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
         T[i][j][k] = min_val
         return min_val
 
-    print(rec_helper(len(seq1), len(seq2), len(seq3)))
+    #print(rec_helper(len(seq1), len(seq2), len(seq3)))
 
 
 def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
@@ -120,10 +121,10 @@ def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     last1 = len(seq1)
     last2 = len(seq2)
     last3 = len(seq3)
-    print(T[last1][last2][last3])
+    return T[last1][last2][last3]
 
 
-def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost):
+def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputName = "output.txt"):
     a = alphabet
     sm = substmatrix
     g = gapcost
@@ -143,7 +144,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost):
             min_sumcost = seqi_sumcost
             seq_min_sumcost = seqi
 
-    print('%s with sumcost: %i' % (seq_min_sumcost, min_sumcost))
+    #print('%s with sumcost: %i' % (seq_min_sumcost, min_sumcost))
     # above takes O(k^2 * n^2)
     # k^2 for the nested for-loops through 'sequences', n^2 for global alignment
     
@@ -151,10 +152,10 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost):
     M = [Sc]
     sequences.remove(Sc)  # remaining k - 1 strings
 
-    print('\nalignments: (Sc, Si) where Sc is center string and Si is the ith remaining string')
+    #print('\nalignments: (Sc, Si) where Sc is center string and Si is the ith remaining string')
     for seq in sequences:
         cost, alignment = glin.optimal_cost(Sc, seq, a, sm, g, True)
-        print(str(alignment))
+        #print(str(alignment))
 
         M0 = M[0]
         S0 = list(alignment[0])
@@ -222,13 +223,13 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost):
 
     # print M as fasta
     result_str = ''
-    f = open('output.txt', 'w')
+    f = open(outputName, 'w')
     i = 0;
     for s in M:
         temp_namestr = '>'+sequences_names[i]
-        print(temp_namestr)
+        #print(temp_namestr)
         result_str += temp_namestr + '\n'
-        print(s)
+        #print(s)
         result_str += s + '\n'
         i += 1
     f.write(result_str)
@@ -301,6 +302,18 @@ def read_input_fasta(aFile):
     return array
 
 
+def experiment(alphabet, substmatrix):
+
+    for i in range(10, 210, 10):
+        name = "testseqs_"+ str(i) +"_3.fasta"
+        sequences_names_tuples = read_input_fasta("testseqs/" + name)
+        sequences = [e[1] for e in sequences_names_tuples]
+        sp_exact_score = sp_exact_3(sequences[0], sequences[1], sequences[2], substmatrix, 5, alphabet)
+        sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5, "output/" + name)
+        sp_approx_score = ms_sp.compute_sp_score("output/"+ name)
+        calculated = (2*(i-1) / i)*sp_exact_score
+        print("sp_exact_3: %i, sp_approx_score: %i, should be: %i" % (sp_exact_score, sp_approx_score, calculated))
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -323,11 +336,11 @@ def main():
 
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
-
+    experiment(alphabet, substmatrix)
     # test_sp(substmatrix, alphabet)
     # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
     
-    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    #sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
 
 
 if __name__ == '__main__':
