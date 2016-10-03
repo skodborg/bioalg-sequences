@@ -191,7 +191,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
                 # found a dash in S0 caused by this alignment with Si,
                 # we have to insert this dash in all other entries in M on
                 # this position
-                if curr_pos_in_Sc == len(Sc) - 1:
+                if curr_pos_in_Sc == len(Sc):
                     # dash is at the end of S0 in the alignment, 
                     # just append to all strings in M instead
                     M = [s + '-' for s in M]
@@ -231,9 +231,9 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
     i = 0;
     for s in M:
         temp_namestr = '>'+sequences_names[i]
-        #print(temp_namestr)
+        print(temp_namestr)
         result_str += temp_namestr + '\n'
-        #print(s)
+        print(s)
         result_str += s + '\n'
         i += 1
     f.write(result_str)
@@ -340,11 +340,11 @@ def main():
 
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
-    experiment(alphabet, substmatrix)
+    # experiment(alphabet, substmatrix)
     # test_sp(substmatrix, alphabet)
     # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
     
-    #sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
 
 
 if __name__ == '__main__':
