@@ -169,11 +169,11 @@ def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
                     pos_of_Sc_in_M0.append(i)
                     curr_pos_in_M0 = i + 1
                     break
-        print('M0\t\t %s' % (M0))
-        print('Sc\t\t %s' % Sc)
-        print('S0\t\t %s' % (str(''.join(S0))))
-        print('Si\t\t %s' % (Si))
-        print('pos_of_Sc_in_M0\t %s' % (str(pos_of_Sc_in_M0)))
+        # print('M0\t\t %s' % (M0))
+        # print('Sc\t\t %s' % Sc)
+        # print('S0\t\t %s' % (str(''.join(S0))))
+        # print('Si\t\t %s' % (Si))
+        # print('pos_of_Sc_in_M0\t %s' % (str(pos_of_Sc_in_M0)))
 
         Mi = ''
 
@@ -188,8 +188,6 @@ def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
                 # found a dash in S0 caused by this alignment with Si,
                 # we have to insert this dash in all other entries in M on
                 # this position
-                print('len of pos_of_Sc_in_M0: %i' % len(pos_of_Sc_in_M0))
-                print('i: %i' % i)
                 if i >= len(pos_of_Sc_in_M0):
                     # dash is at the end of S0 in the alignment, 
                     # just append to all strings in M instead
