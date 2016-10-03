@@ -169,11 +169,11 @@ def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
                     pos_of_Sc_in_M0.append(i)
                     curr_pos_in_M0 = i + 1
                     break
-        # print('M0\t\t %s' % (M0))
-        # print('Sc\t\t ACGT')
-        # print('S0\t\t %s' % (str(''.join(S0))))
-        # print('Si\t\t %s' % (Si))
-        # print('pos_of_Sc_in_M0\t %s' % (str(pos_of_Sc_in_M0)))
+        print('M0\t\t %s' % (M0))
+        print('Sc\t\t ACGT')
+        print('S0\t\t %s' % (str(''.join(S0))))
+        print('Si\t\t %s' % (Si))
+        print('pos_of_Sc_in_M0\t %s' % (str(pos_of_Sc_in_M0)))
 
         Mi = ''
 
@@ -213,11 +213,17 @@ def sp_approx_2(sequences, alphabet, substmatrix, gapcost):
 
         M.append(Mi)
 
-        
-    # prettyprint M
-    msa = [[s] for s in M]
-    print('\nmsa:')
-    print(np.array(msa))
+    # print M as fasta
+    result_str = ''
+    f = open('output.txt', 'w')
+    for s in M:
+        temp_namestr = '>TODO: insert name'
+        print(temp_namestr)
+        result_str += temp_namestr + '\n'
+        print(s)
+        result_str += s + '\n'
+    f.write(result_str)
+    f.close()
 
 
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
@@ -288,18 +294,14 @@ def read_input_fasta(aFile):
 def main():
     parser = argparse.ArgumentParser()
 
-    help_seq1 = "Path to FASTA file containing the first sequence"
-    parser.add_argument("--seq1", help=help_seq1)
-    help_seq2 = "Path to FASTA file containing the second sequence"
-    parser.add_argument("--seq2", help=help_seq2)
-    help_seq3 = "Path to FASTA file containing the first sequence"
-    parser.add_argument("--seq3", help=help_seq3)
+    help_seqs = "Path to FASTA file containing the sequences"
+    parser.add_argument('-s', '--sequences', help=help_seqs)
     help_substmatrix = "Path to a file containing the score matrix"
     parser.add_argument("substmatrix", help=help_substmatrix)
 
     args = parser.parse_args()
 
-    # seq1 = read_input_fasta(args.seq1)
+    sequences_names_tuples = read_input_fasta(args.sequences)
     # seq2 = read_input_fasta(args.seq2)
     # seq3 = read_input_fasta(args.seq3)
 
@@ -314,8 +316,10 @@ def main():
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
 
-    test_sp(substmatrix, alphabet)
-    run_tests(seq1, seq2, seq3, substmatrix, alphabet)
+    # test_sp(substmatrix, alphabet)
+    # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
+    sequences = [e[1] for e in sequences_names_tuples]
+    sp_approx_2(sequences, alphabet, substmatrix, 5)
 
 
 if __name__ == '__main__':
