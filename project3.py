@@ -239,7 +239,8 @@ def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
     # sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
     # recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
     sequences = ['ACGT', 'ATTCT', 'CTCGA', 'ACGGT']
-    sp_approx_2(sequences, alphabet, substmatrix, 5)
+    sequences_names_tuples = [('seq%i' % i, s) for i, s in enumerate(sequences)]
+    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
 
 
 def test_sp(substmatrix, alphabet):
@@ -311,12 +312,10 @@ def main():
     args = parser.parse_args()
 
     sequences_names_tuples = read_input_fasta(args.sequences)
-    # seq2 = read_input_fasta(args.seq2)
-    # seq3 = read_input_fasta(args.seq3)
 
-    seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
-    seq2 = 'ATGGATTTATCTGCTCTTCG'
-    seq3 = 'TGCATGCTGAAACTTCTCAACCA'
+    # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
+    # seq2 = 'ATGGATTTATCTGCTCTTCG'
+    # seq3 = 'TGCATGCTGAAACTTCTCAACCA'
 
     # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCCAAGCGGCCGGTTTCCTTGGCGACGGAGAGCGCGGGAATTTTAGATAGATTGTAATTGCGGCTGCGCGGCCGCTGCCCGTGCAGCCAGAGGATCCAGCACCTCTCTTGGGGCTTCTCCGTCCTCGGCGCTTGGAAGTACGGATCTTTTTTCTCGGAGAAAAGTTCACTGGAACTG'
     # seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
