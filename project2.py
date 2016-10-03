@@ -3,12 +3,15 @@ import argparse
 import random as rnd
 import project1_2 as prj1
 import time
+import sys
 
 alph = {'A': 0, 'C': 1, 'G': 2, 'T': 3}
 
 alpha = 0
 beta = 0
 
+sys.setrecursionlimit(30000)
+print('recursion limit: ' + str(sys.getrecursionlimit()))
 
 #         A,  C,  G,  T
 mSub = [[10,  2,  5,  2],  # A
@@ -31,8 +34,14 @@ def optimal_cost(seq1, seq2, optimizer_func=max, backtracking=False):
     mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
     mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
+    counter = 0
     # recursions
     def S(i, j):
+        nonlocal counter
+        counter += 1
+        if counter % 10000 == 0:
+            print(counter)
+        # print('i: %i   j: %i' % (i, j))
         values = []
 
         if i == 0 and j == 0:
@@ -107,6 +116,7 @@ def optimal_cost(seq1, seq2, optimizer_func=max, backtracking=False):
         return opt_value
 
     result = S(len(seq1), len(seq2))
+    print('result: %i' % result)
     #print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
     alignment = None
     if backtracking:
