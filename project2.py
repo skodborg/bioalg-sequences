@@ -11,7 +11,7 @@ alpha = 0
 beta = 0
 
 sys.setrecursionlimit(30000)
-print('recursion limit: ' + str(sys.getrecursionlimit()))
+# print('recursion limit: ' + str(sys.getrecursionlimit()))
 
 #         A,  C,  G,  T
 mSub = [[10,  2,  5,  2],  # A
