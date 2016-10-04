@@ -242,6 +242,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
     f.close()
 
 
+
 def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
     # sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
     # recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
@@ -291,6 +292,22 @@ def test_sp(substmatrix, alphabet):
     assert(sp("-", "-", "G") == 10)
     assert(sp("A", "-", "-") == 10)
     assert(sp("-", "-", "-") == 0)
+
+
+
+def generated_tests(alphabet, substmatrix):
+
+    for i in range(0, 10):
+        seq1 = prj2.generate_random_seq_with_length(10)
+        seq2 = prj2.generate_random_seq_with_length(10)
+        seq3 = prj2.generate_random_seq_with_length(10)
+        sequences_tuple = [("none", seq1), ("none", seq2), ("none", seq3)]
+
+        sp_exact_score = sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
+        sp_approx_2(sequences_tuple, alphabet, substmatrix, 5, "output/generated.fasta")
+        sp_approx_score = ms_sp.compute_sp_score("output/generated.fasta")
+        calculatedMax = (2*(10-1) / 10)*sp_exact_score
+        assert(sp_exact_score <= sp_approx_score and sp_approx_score <= calculatedMax)
 
 
 def read_input_fasta(aFile):
@@ -346,11 +363,12 @@ def main():
     # randomly
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
+    generated_tests(alphabet, substmatrix)
     # experiment(alphabet, substmatrix)
     # test_sp(substmatrix, alphabet)
     # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
     
-    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    #sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
 
 
 if __name__ == '__main__':
