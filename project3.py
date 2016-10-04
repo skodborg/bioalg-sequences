@@ -133,14 +133,14 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
 
     min_sumcost = float('inf')
     seq_min_sumcost = ''
-    for i, seqi in enumerate(sequences[1:]):
+    for i, seqi in enumerate(sequences):
         seqi_sumcost = 0
         for j, seqj in enumerate(sequences):
             if seqi == seqj:
                 continue  # same sequence, skip comparison
             seqij_cost = glin.optimal_cost(seqi, seqj, a, sm, g)[0]
             seqi_sumcost += seqij_cost
-            print('sequences %i and %i had cost: %i' % (i, j, seqij_cost))
+            # print('sequences %i and %i had cost: %i' % (i, j, seqij_cost))
         if seqi_sumcost < min_sumcost:
             # found a sequence with a smaller sumcost of global alignments
             min_sumcost = seqi_sumcost
@@ -235,7 +235,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
         temp_namestr = '>'+sequences_names[i]
         print(temp_namestr)
         result_str += temp_namestr + '\n'
-        print(s)
+        # print(s)
         result_str += s + '\n'
         i += 1
     f.write(result_str)
@@ -369,6 +369,7 @@ def main():
     # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
     
     #sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+
 
 
 if __name__ == '__main__':

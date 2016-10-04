@@ -1,0 +1,20 @@
+done with the following two: SEQ1 and SEQ2
+result: 3305 
+
+done with the following two: SEQ1 and SEQ3
+result: 10507 
+
+done with the following two: SEQ1 and SEQ4
+result: 11056 
+
+done with the following two: SEQ1 and SEQ5
+result: 3171 
+
+done with the following two: SEQ1 and SEQ6
+result: 10945 
+
+done with the following two: SEQ1 and SEQ7
+result: 3099 
+
+done with the following two: SEQ1 and SEQ8
+result: 6373 
