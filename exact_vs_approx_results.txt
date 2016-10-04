@@ -1,0 +1,61 @@
+seq3_10
+exact: 70, approx: 70, upper: 126
+
+seq3_20
+exact: 135, approx: 135, upper: 256
+
+seq30
+exact: 231, approx: 246, upper: 446
+
+seq3_40
+exact: 318, approx: 328, upper: 620
+
+seq3_50
+exact: 385, approx: 416, upper: 754
+
+seq3_60
+exact: 440, approx: 491, upper: 865
+
+seq3_70
+exact: 516, approx: 558, upper: 1017
+
+seq3_80
+exact: 589, approx: 658, upper: 1163
+
+seq3_90
+exact: 628, approx: 701, upper: 1242
+
+seq3_100
+exact: 687, approx: 727, upper: 1360
+
+seq3_110
+exact: 754, approx: 825, upper: 1494
+
+seq3_120
+exact: 810, approx: 918, upper: 1606
+
+seq3_130
+exact: 895, approx: 996, upper: 1776
+
+seq3_140
+exact: 957, approx: 1032, upper: 1900
+
+seq3_150
+exact: 1023, approx: 1127, upper: 2032
+
+seq3_160
+exact: 1080, approx: 1173, upper: 2146
+
+seq3_170
+exact: 1186, approx: 1302, upper: 2358
+
+seq3_180
+exact: 1158, approx: 1243, upper: 2303
+
+seq3_190
+exact: 1323, approx: 1468, upper: 2632
+
+seq3_200
+exact: 1379, approx: 1504, upper: 2744
+
+

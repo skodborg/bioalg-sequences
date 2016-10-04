@@ -116,11 +116,11 @@ def optimal_cost(seq1, seq2, optimizer_func=max, backtracking=False):
         return opt_value
 
     result = S(len(seq1), len(seq2))
-    print('done with the following two:')
-    print(seq1[:40])
-    print()
-    print(seq2[:40])
-    print('result: %i \n\n\n' % result)
+    # print('done with the following two:')
+    # print(seq1[:40])
+    # print()
+    # print(seq2[:40])
+    # print('result: %i \n\n\n' % result)
     #print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
     alignment = None
     if backtracking:
