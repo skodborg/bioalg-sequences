@@ -15,3 +15,6 @@ result: 10945
 
 done with the following two: SEQ1 and SEQ7
 result: 3099 
+
+done with the following two: SEQ1 and SEQ8
+result: 6373 
