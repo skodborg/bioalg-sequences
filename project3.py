@@ -133,12 +133,14 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
 
     min_sumcost = float('inf')
     seq_min_sumcost = ''
-    for seqi in sequences:
+    for i, seqi in enumerate(sequences[1:]):
         seqi_sumcost = 0
-        for seqj in sequences:
+        for j, seqj in enumerate(sequences):
             if seqi == seqj:
                 continue  # same sequence, skip comparison
-            seqi_sumcost += glin.optimal_cost(seqi, seqj, a, sm, g)[0]
+            seqij_cost = glin.optimal_cost(seqi, seqj, a, sm, g)[0]
+            seqi_sumcost += seqij_cost
+            print('sequences %i and %i had cost: %i' % (i, j, seqij_cost))
         if seqi_sumcost < min_sumcost:
             # found a sequence with a smaller sumcost of global alignments
             min_sumcost = seqi_sumcost
@@ -338,6 +340,10 @@ def main():
     # seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
     # seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
 
+    # brca1-full.fasta contains two 'R's, two 'N's, substituted by 'A's,
+    # and an 'S' substituted by a 'C' - the wikipedia page said the letters were
+    # related somehow in a table, so I just chose these somehow related substitutions
+    # randomly
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
     # experiment(alphabet, substmatrix)
