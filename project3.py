@@ -157,7 +157,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
     #print('\nalignments: (Sc, Si) where Sc is center string and Si is the ith remaining string')
     for seq in sequences:
         cost, alignment = glin.optimal_cost(Sc, seq, a, sm, g, True)
-        #print(str(alignment))
+        # print(str(alignment))
 
         M0 = M[0]
         S0 = list(alignment[0])
@@ -178,7 +178,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
         # print('Sc\t\t %s' % Sc)
         # print('S0\t\t %s' % (str(''.join(S0))))
         # print('Si\t\t %s' % (Si))
-        # print('pos_of_Sc_in_M0\t %s' % (str(pos_of_Sc_in_M0)))
+        
 
         Mi = ''
 
@@ -225,6 +225,14 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
 
                 curr_pos_in_Sc += 1
 
+
+        M0 = M[0]
+
+        # inserting end dashes as found in M0 after processing S0
+        if len(Mi) < len(M0):
+            diff = len(M0) - len(Mi)
+            Mi += '-' * diff
+
         M.append(Mi)
 
     # print M as fasta
@@ -235,7 +243,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
         temp_namestr = '>'+sequences_names[i]
         print(temp_namestr)
         result_str += temp_namestr + '\n'
-        # print(s)
+        print(s)
         result_str += s + '\n'
         i += 1
     f.write(result_str)
@@ -297,10 +305,10 @@ def test_sp(substmatrix, alphabet):
 
 def generated_tests(alphabet, substmatrix):
 
-    for i in range(0, 10):
-        seq1 = prj2.generate_random_seq_with_length(10)
-        seq2 = prj2.generate_random_seq_with_length(10)
-        seq3 = prj2.generate_random_seq_with_length(10)
+    for i in range(0, 50):
+        seq1 = prj2.generate_random_seq_with_length(30)
+        seq2 = prj2.generate_random_seq_with_length(30)
+        seq3 = prj2.generate_random_seq_with_length(30)
         sequences_tuple = [("none", seq1), ("none", seq2), ("none", seq3)]
 
         sp_exact_score = sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
@@ -308,7 +316,8 @@ def generated_tests(alphabet, substmatrix):
         sp_approx_score = ms_sp.compute_sp_score("output/generated.fasta")
         calculatedMax = (2*(10-1) / 10)*sp_exact_score
         assert(sp_exact_score <= sp_approx_score and sp_approx_score <= calculatedMax)
-
+        print('%i < %i < %i' % (sp_exact_score, sp_approx_score, calculatedMax))
+        print()
 
 def read_input_fasta(aFile):
     array = []
