@@ -31,9 +31,9 @@ def optimal_cost(seq1, seq2, optimizer_func=max, backtracking=False):
         if beta > 0:
             loc_beta = -beta  
     
-    mS = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
-    mD = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
-    mI = [[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)]
+    mS = np.array([[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)])
+    mD = np.array([[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)])
+    mI = np.array([[None for _ in range(len(seq2) + 1)] for _ in range(len(seq1) + 1)])
     counter = 0
     # recursions
     def S(i, j):
@@ -121,7 +121,7 @@ def optimal_cost(seq1, seq2, optimizer_func=max, backtracking=False):
     # print()
     # print(seq2[:40])
     # print('result: %i \n\n\n' % result)
-    #print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
+    # print(str(backtrack(seq1, seq2, mS)) + " cost: " + str(result))
     alignment = None
     if backtracking:
         alignment = backtrack(seq1, seq2, mS)

@@ -123,6 +123,31 @@ def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     last3 = len(seq3)
     return T[last1][last2][last3]
 
+def global_align_all_combinations(sequences_names_tuples, a, sm, g):
+    sequences = [e[1] for e in sequences_names_tuples]
+    sequences_names = [e[0] for e in sequences_names_tuples]
+
+    for i, seqi in enumerate(sequences):
+        for j, seqj in enumerate(sequences):
+            if j <= i:
+                continue
+            # if seqi == seqj:
+            #     continue  # same sequence, skip comparison
+            seqij_cost, seqij_alignment = glin.optimal_cost(seqi, seqj, a, sm, g, True)
+            f = open('pairwise-alignments-brca1full/seq%i-seq%i.txt' % (i+1, j+1), 'w')
+            content = '; %i\n' % seqij_cost
+            content += '>seq%i\n' % (i+1)
+            content += '%s\n\n' % seqi
+            content += '>seq%i\n' % (j+1)
+            content += '%s\n\n' % seqj
+            content += '>seq%i - backtracked alignment\n' % (i+1)
+            content += '%s\n\n' % seqij_alignment[0]
+            content += '>seq%i - backtracked alignment\n' % (j+1)
+            content += '%s\n\n' % seqij_alignment[1]
+            f.write(content)
+            f.close()
+            print('finished seq%i and seq%i' % (i+1, j+1))
+
 
 def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputName = "output.txt"):
     a = alphabet
@@ -151,6 +176,7 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
     # k^2 for the nested for-loops through 'sequences', n^2 for global alignment
     
     Sc = seq_min_sumcost  # center string in star tree
+    # Sc = sequences[0]
     M = [Sc]
     sequences.remove(Sc)  # remaining k - 1 strings
 
@@ -372,12 +398,13 @@ def main():
     # randomly
 
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
-    generated_tests(alphabet, substmatrix)
+    # generated_tests(alphabet, substmatrix)
     # experiment(alphabet, substmatrix)
     # test_sp(substmatrix, alphabet)
     # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
     
-    #sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    # sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    global_align_all_combinations(sequences_names_tuples, alphabet, substmatrix, 5)
 
 
 
