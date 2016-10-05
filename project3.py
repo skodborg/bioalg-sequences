@@ -82,8 +82,76 @@ def recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
 
     #print(rec_helper(len(seq1), len(seq2), len(seq3)))
 
+def backtrack(T, seq1, seq2, seq3, sp):
+    i = len(seq1)
+    j = len(seq2)
+    k = len(seq3)
 
-def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
+    alignment = ['', '', '']
+
+    while i > 0 or j > 0 or k > 0:
+
+        if i > 0 and j > 0 and k > 0 and \
+        T[i][j][k] == T[i-1][j-1][k-1] + sp(seq1[i-1], seq2[j-1], seq3[k-1]):
+            alignment[0] = seq1[i-1] + alignment[0]
+            alignment[1] = seq2[j-1] + alignment[1]
+            alignment[2] = seq3[k-1] + alignment[2]
+            i -= 1
+            j -= 1
+            k -= 1
+        elif i > 0 and j > 0 and k >= 0 and \
+        T[i][j][k] == T[i - 1][j - 1][k] + sp(seq1[i - 1], seq2[j - 1], '-'):
+            alignment[0] = seq1[i-1] + alignment[0]
+            alignment[1] = seq2[j-1] + alignment[1]
+            alignment[2] = '-' + alignment[2]
+            i -= 1
+            j -= 1
+        elif i > 0 and j >= 0 and k > 0 and \
+        T[i][j][k] == T[i - 1][j][k - 1] + sp(seq1[i - 1], '-', seq3[k - 1]):
+            alignment[0] = seq1[i-1] + alignment[0]
+            alignment[1] = '-' + alignment[1]
+            alignment[2] = seq3[k-1] + alignment[2]
+            i -= 1
+            k -= 1
+        elif i >= 0 and j > 0 and k > 0 and \
+        T[i][j][k] == T[i][j - 1][k - 1] + sp('-', seq2[j - 1], seq3[k - 1]):
+            alignment[0] = '-' + alignment[0]
+            alignment[1] = seq2[j-1] + alignment[1]
+            alignment[2] = seq3[k-1] + alignment[2]
+            j -= 1
+            k -= 1
+        elif i > 0 and j >= 0 and k >= 0 and \
+        T[i][j][k] == T[i - 1][j][k] + sp(seq1[i - 1], '-', '-'):
+            alignment[0] = seq1[i-1] + alignment[0]
+            alignment[1] = '-' + alignment[1]
+            alignment[2] = '-' + alignment[2]
+            i -= 1
+        elif i >= 0 and j > 0 and k >= 0 and \
+        T[i][j][k] == T[i][j - 1][k] + sp('-', seq2[j - 1], '-'):
+            alignment[0] = '-' + alignment[0]
+            alignment[1] = seq2[j-1] + alignment[1]
+            alignment[2] = '-' + alignment[2]
+            j -= 1
+        elif i >= 0 and j >= 0 and k > 0 and \
+        T[i][j][k] == T[i][j][k - 1] + sp('-', '-', seq3[k - 1]):
+            alignment[0] = '-' + alignment[0]
+            alignment[1] = '-' + alignment[1]
+            alignment[2] = seq3[k-1] + alignment[2]
+            k -= 1
+        else:
+            print("ERROR IN BACKTRACKING")
+
+    print(alignment)
+    assert(len(alignment[0]) == len(alignment[1]) == len(alignment[2]))
+    alignment_score = 0
+    for i in range(len(alignment[0])):
+        alignment_score += sp(alignment[0][i], alignment[1][i], alignment[2][i])
+    print('alignment score: %i' % alignment_score)
+
+
+
+
+def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet, incl_backtrack=False):
     len1 = range(len(seq1) + 1)
     len2 = range(len(seq2) + 1)
     len3 = range(len(seq3) + 1)
@@ -121,6 +189,8 @@ def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet):
     last1 = len(seq1)
     last2 = len(seq2)
     last3 = len(seq3)
+    if incl_backtrack:
+        backtrack(T, seq1, seq2, seq3, sp)
     return T[last1][last2][last3]
 
 def global_align_all_combinations(sequences_names_tuples, a, sm, g):
