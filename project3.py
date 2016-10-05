@@ -473,8 +473,8 @@ def main():
     # test_sp(substmatrix, alphabet)
     # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
     
-    # sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
-    global_align_all_combinations(sequences_names_tuples, alphabet, substmatrix, 5)
+    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    # global_align_all_combinations(sequences_names_tuples, alphabet, substmatrix, 5)
 
 
 
