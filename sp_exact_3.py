@@ -6,6 +6,8 @@ import argparse
 def main():
     parser = argparse.ArgumentParser()
 
+    help_backtrack = "Backtrack and output an optimal alignment along with the cost"
+    parser.add_argument('-b', '--backtrack', help=help_backtrack, action='store_true')
     help_seqs = "Path to FASTA file containing the three sequences"
     parser.add_argument('sequences', help=help_seqs)
     help_substmatrix = "Path to a file containing the score matrix"
@@ -20,7 +22,8 @@ def main():
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
     gapcost = args.gapcost
 
-    print(prj3.sp_exact_3(seqs[0], seqs[1], seqs[2], substmatrix, gapcost, alphabet))
+    backtrack = args.backtrack
+    print(prj3.sp_exact_3(seqs[0], seqs[1], seqs[2], substmatrix, gapcost, alphabet, backtrack))
 
 
 if __name__ == '__main__':
