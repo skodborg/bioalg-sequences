@@ -373,12 +373,35 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
 
 
 def run_tests(sequences_names_tuples, substmatrix, alphabet, gapcost):
-    # sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
-    # recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
-    # sequences = ['ACGT', 'ATTCT', 'CTCGA', 'ACGGT']
-    # sequences_names_tuples = [('seq%i' % i, s) for i, s in enumerate(sequences)]
-    # sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
-    load_brca1_globalalignments()
+    brca1testseqs = read_input_fasta('brca1-testseqs.fasta')
+    
+    for tup in brca1testseqs[:3]:
+        print(tup[0])
+    sp_approx_2(brca1testseqs[:3], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-3.txt")
+    # score: 794
+
+    print()
+
+    for tup in brca1testseqs[:4]:
+        print(tup[0])
+    sp_approx_2(brca1testseqs[:4], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-4.txt")
+    # score: 2340
+
+    print()
+
+    for tup in brca1testseqs[:5]:
+        print(tup[0])
+    sp_approx_2(brca1testseqs[:5], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-5.txt")
+    # score: 3313
+
+    print()
+
+    for tup in brca1testseqs[:6]:
+        print(tup[0])
+    sp_approx_2(brca1testseqs[:6], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-6.txt")
+    # score: 5964
+
+    sequences, alignments = load_brca1_globalalignments()
 
 
 def test_sp(substmatrix, alphabet):
