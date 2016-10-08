@@ -244,7 +244,7 @@ def global_align_all_combinations(sequences_names_tuples, a, sm, g):
             print('finished seq%i and seq%i' % (i+1, j+1))
 
 
-def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputName = "output.txt"):
+def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputName="output.txt"):
     a = alphabet
     sm = substmatrix
     g = gapcost
