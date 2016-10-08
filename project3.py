@@ -3,6 +3,7 @@ import argparse
 import project2 as prj2
 import global_linear as glin
 import msa_sp_score_3k as ms_sp
+import os
 
 
 def sp_func(substmatrix, gapcost, alph):
@@ -149,6 +150,32 @@ def backtrack(T, seq1, seq2, seq3, sp):
     print('alignment score: %i' % alignment_score)
 
 
+def load_brca1_globalalignments():
+    sequences = [None for _ in range(8)]
+    alignments = {}
+    path = 'pairwise-alignments-brca1full/'
+    for filename in os.listdir(path):
+        f = open(path + filename, 'r')
+        score = int(f.readline()[2:])
+        seqi_nr = int(f.readline()[4:])
+        seqi = f.readline()
+        f.readline()  # skip blank line
+        seqj_nr = int(f.readline()[4:])
+        seqj = f.readline()
+        f.readline()  # skip blank line
+        f.readline()  # skip '>seqi - backtracked alignment' line
+        seqi_alignment = f.readline()
+        f.readline()  # skip blank line
+        f.readline()  # skip '>seqj - backtracked alignment' line
+        seqj_alignment = f.readline()
+
+        if sequences[seqi_nr - 1] is None:
+            sequences[seqi_nr - 1] = seqi
+        if sequences[seqj_nr - 1] is None:
+            sequences[seqj_nr - 1] = seqj
+        alignments[(seqi_nr, seqj_nr)] = (seqi_alignment, seqj_alignment, score)
+
+    return sequences, alignments
 
 
 def sp_exact_3(seq1, seq2, seq3, substmatrix, gapcost, alphabet, incl_backtrack=False):
@@ -200,9 +227,7 @@ def global_align_all_combinations(sequences_names_tuples, a, sm, g):
     for i, seqi in enumerate(sequences):
         for j, seqj in enumerate(sequences):
             if j <= i:
-                continue
-            # if seqi == seqj:
-            #     continue  # same sequence, skip comparison
+                continue  # we only want one alignment per unique pair i,j
             seqij_cost, seqij_alignment = glin.optimal_cost(seqi, seqj, a, sm, g, True)
             f = open('pairwise-alignments-brca1full/seq%i-seq%i.txt' % (i+1, j+1), 'w')
             content = '; %i\n' % seqij_cost
@@ -347,12 +372,13 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
 
 
 
-def run_tests(seq1, seq2, seq3, substmatrix, alphabet):
+def run_tests(sequences_names_tuples, substmatrix, alphabet, gapcost):
     # sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
     # recursive_sp_exact_3(seq1, seq2, seq3, substmatrix, 5, alphabet)
-    sequences = ['ACGT', 'ATTCT', 'CTCGA', 'ACGGT']
-    sequences_names_tuples = [('seq%i' % i, s) for i, s in enumerate(sequences)]
-    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    # sequences = ['ACGT', 'ATTCT', 'CTCGA', 'ACGGT']
+    # sequences_names_tuples = [('seq%i' % i, s) for i, s in enumerate(sequences)]
+    # sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
+    load_brca1_globalalignments()
 
 
 def test_sp(substmatrix, alphabet):
@@ -446,35 +472,16 @@ def main():
     parser = argparse.ArgumentParser()
 
     help_seqs = "Path to FASTA file containing the sequences"
-    parser.add_argument('-s', '--sequences', help=help_seqs)
+    parser.add_argument('sequences', help=help_seqs)
     help_substmatrix = "Path to a file containing the score matrix"
     parser.add_argument("substmatrix", help=help_substmatrix)
 
     args = parser.parse_args()
 
     sequences_names_tuples = read_input_fasta(args.sequences)
-
-    # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCC'
-    # seq2 = 'ATGGATTTATCTGCTCTTCG'
-    # seq3 = 'TGCATGCTGAAACTTCTCAACCA'
-
-    # seq1 = 'GTTCCGAAAGGCTAGCGCTAGGCGCCAAGCGGCCGGTTTCCTTGGCGACGGAGAGCGCGGGAATTTTAGATAGATTGTAATTGCGGCTGCGCGGCCGCTGCCCGTGCAGCCAGAGGATCCAGCACCTCTCTTGGGGCTTCTCCGTCCTCGGCGCTTGGAAGTACGGATCTTTTTTCTCGGAGAAAAGTTCACTGGAACTG'
-    # seq2 = 'ATGGATTTATCTGCTCTTCGCGTTGAAGAAGTACAAAATGTCATTAACGCTATGCAGAAAATCTTAGAGTGTCCCATCTGTCTGGAGTTGATCAAGGAACCTGTCTCCACAAAGTGTGACCACATATTTTGCAAATTTTGCATGCTGAAACTTCTCAACCAGAAGAAAGGGCCTTCACAGTGTCCTTTATGTAAGAATGA'
-    # seq3 = 'CGCTGGTGCAACTCGAAGACCTATCTCCTTCCCGGGGGGGCTTCTCCGGCATTTAGGCCTCGGCGTTTGGAAGTACGGAGGTTTTTCTCGGAAGAAAGTTCACTGGAAGTGGAAGAAATGGATTTATCTGCTGTTCGAATTCAAGAAGTACAAAATGTCCTTCATGCTATGCAGAAAATCTTGGAGTGTCCAATCTGTTT'
-
-    # brca1-full.fasta contains two 'R's, two 'N's, substituted by 'A's,
-    # and an 'S' substituted by a 'C' - the wikipedia page said the letters were
-    # related somehow in a table, so I just chose these somehow related substitutions
-    # randomly
-
     alphabet, substmatrix = prj2.read_input_score(args.substmatrix)
-    # generated_tests(alphabet, substmatrix)
-    # experiment(alphabet, substmatrix)
-    # test_sp(substmatrix, alphabet)
-    # run_tests(seq1, seq2, seq3, substmatrix, alphabet)
-    
-    sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5)
-    # global_align_all_combinations(sequences_names_tuples, alphabet, substmatrix, 5)
+
+    run_tests(sequences_names_tuples, substmatrix, alphabet, 5)
 
 
 
