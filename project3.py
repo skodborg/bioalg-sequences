@@ -158,16 +158,16 @@ def load_brca1_globalalignments():
         f = open(path + filename, 'r')
         score = int(f.readline()[2:])
         seqi_nr = int(f.readline()[4:])
-        seqi = f.readline()
+        seqi = f.readline().replace('\n', '')
         f.readline()  # skip blank line
         seqj_nr = int(f.readline()[4:])
-        seqj = f.readline()
+        seqj = f.readline().replace('\n', '')
         f.readline()  # skip blank line
         f.readline()  # skip '>seqi - backtracked alignment' line
-        seqi_alignment = f.readline()
+        seqi_alignment = f.readline().replace('\n', '')
         f.readline()  # skip blank line
         f.readline()  # skip '>seqj - backtracked alignment' line
-        seqj_alignment = f.readline()
+        seqj_alignment = f.readline().replace('\n', '')
 
         if sequences[seqi_nr - 1] is None:
             sequences[seqi_nr - 1] = seqi
@@ -244,7 +244,7 @@ def global_align_all_combinations(sequences_names_tuples, a, sm, g):
             print('finished seq%i and seq%i' % (i+1, j+1))
 
 
-def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputName="output.txt"):
+def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputName="output.txt", precomputed_alignments=None):
     a = alphabet
     sm = substmatrix
     g = gapcost
@@ -371,37 +371,42 @@ def sp_approx_2(sequences_names_tuples, alphabet, substmatrix, gapcost, outputNa
     f.close()
 
 
-
 def run_tests(sequences_names_tuples, substmatrix, alphabet, gapcost):
-    brca1testseqs = read_input_fasta('brca1-testseqs.fasta')
-    
-    for tup in brca1testseqs[:3]:
-        print(tup[0])
-    sp_approx_2(brca1testseqs[:3], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-3.txt")
-    # score: 794
+    def run_brca1testseqs():
+        brca1testseqs = read_input_fasta('brca1-testseqs.fasta')
+        
+        for tup in brca1testseqs[:3]:
+            print(tup[0])
+        sp_approx_2(brca1testseqs[:3], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-3.txt")
+        # score: 794
 
-    print()
+        print()
 
-    for tup in brca1testseqs[:4]:
-        print(tup[0])
-    sp_approx_2(brca1testseqs[:4], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-4.txt")
-    # score: 2340
+        for tup in brca1testseqs[:4]:
+            print(tup[0])
+        sp_approx_2(brca1testseqs[:4], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-4.txt")
+        # score: 2340
 
-    print()
+        print()
 
-    for tup in brca1testseqs[:5]:
-        print(tup[0])
-    sp_approx_2(brca1testseqs[:5], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-5.txt")
-    # score: 3313
+        for tup in brca1testseqs[:5]:
+            print(tup[0])
+        sp_approx_2(brca1testseqs[:5], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-5.txt")
+        # score: 3313
 
-    print()
+        print()
 
-    for tup in brca1testseqs[:6]:
-        print(tup[0])
-    sp_approx_2(brca1testseqs[:6], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-6.txt")
-    # score: 5964
+        for tup in brca1testseqs[:6]:
+            print(tup[0])
+        sp_approx_2(brca1testseqs[:6], alphabet, substmatrix, gapcost, "msa_brca1testseqs_1-6.txt")
+        # score: 5964
 
-    sequences, alignments = load_brca1_globalalignments()
+    def run_brca1full():
+        sequences, alignments = load_brca1_globalalignments()
+        # TODO: add precomputed alignments to sp_approx_2
+        print(alignments[(1,2)])
+
+    run_brca1full()
 
 
 def test_sp(substmatrix, alphabet):
@@ -447,7 +452,6 @@ def test_sp(substmatrix, alphabet):
     assert(sp("-", "-", "-") == 0)
 
 
-
 def generated_tests(alphabet, substmatrix):
 
     for i in range(0, 50):
@@ -463,6 +467,7 @@ def generated_tests(alphabet, substmatrix):
         assert(sp_exact_score <= sp_approx_score and sp_approx_score <= calculatedMax)
         print('%i < %i < %i' % (sp_exact_score, sp_approx_score, calculatedMax))
         print()
+
 
 def read_input_fasta(aFile):
     array = []
