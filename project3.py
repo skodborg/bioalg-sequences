@@ -493,7 +493,8 @@ def experiment(alphabet, substmatrix):
         sp_exact_score = sp_exact_3(sequences[0], sequences[1], sequences[2], substmatrix, 5, alphabet)
         sp_approx_2(sequences_names_tuples, alphabet, substmatrix, 5, "output/" + name)
         sp_approx_score = ms_sp.compute_sp_score("output/"+ name)
-        calculated = (2*(i-1) / i)*sp_exact_score
+        k = 3  # 3 sequences in this experiment
+        calculated = (2*(k-1) / k)*sp_exact_score
         print("sp_exact_3: %i, sp_approx_score: %i, should be: %i" % (sp_exact_score, sp_approx_score, calculated))
 
 def main():
